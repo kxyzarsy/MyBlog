@@ -1,0 +1,91 @@
+<!-- admin/users.html -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+    <link th:href="@{/css/admin.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!--    <style>-->
+<!--        /* 复用 articles.html 的样式 */-->
+<!--        .admin-container {-->
+<!--            max-width: 1200px;-->
+<!--            margin: 0 auto;-->
+<!--            padding: 20px;-->
+<!--        }-->
+<!--        .management-header {-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            align-items: center;-->
+<!--            margin-bottom: 30px;-->
+<!--        }-->
+<!--        .btn-action {-->
+<!--            padding: 8px 20px;-->
+<!--            background: #6c5ce7;-->
+<!--            color: white;-->
+<!--            border-radius: 5px;-->
+<!--            text-decoration: none;-->
+<!--        }-->
+<!--        .data-table {-->
+<!--            width: 100%;-->
+<!--            border-collapse: collapse;-->
+<!--        }-->
+<!--        .data-table th, .data-table td {-->
+<!--            padding: 12px;-->
+<!--            border-bottom: 1px solid #eee;-->
+<!--            text-align: left;-->
+<!--        }-->
+<!--        .action-buttons form {-->
+<!--            display: inline-block;-->
+<!--        }-->
+<!--        .btn-edit, .btn-delete {-->
+<!--            padding: 5px 10px;-->
+<!--            margin: 0 5px;-->
+<!--            border-radius: 3px;-->
+<!--        }-->
+<!--    </style>-->
+</head>
+<body>
+<div class="admin-container">
+    <div class="management-header">
+        <h1>用户管理</h1>
+        <a href="/register" class="btn-action">+ 新建用户</a>
+    </div>
+
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th>用户名</th>
+            <th>身份</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 动态加载用户数据 -->
+        <tr th:each="user : ${users}">
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.role}"></td> <!-- 新增列 -->
+            <td th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+            <td class="action-buttons">
+                <a th:href="@{/admin/users/edit/{id}(id=${user.userId})}" class="btn-edit">编辑</a>
+                <form th:action="@{/admin/users/delete/{id}(id=${user.userId})}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn-delete" onclick="return confirm('确认删除？')">删除</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 分页逻辑（根据需求添加） -->
+    <div class="pagination" th:if="${totalPages > 0}">
+        <a th:if="${currentPage > 0}" th:href="@{/admin/users(page=${currentPage - 1})}">上一页</a>
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <a th:href="@{/admin/users(page=${i})}" th:classappend="${i == currentPage} ? 'active'" th:text="${i + 1}"></a>
+        </span>
+        <a th:if="${currentPage < totalPages - 1}" th:href="@{/admin/users(page=${currentPage + 1})}">下一页</a>
+    </div>
+</div>
+</body>
+</html>

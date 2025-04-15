@@ -1,0 +1,41 @@
+<html th:replace="~{layout/base :: layout(~{::title}, ~{::#main-content})}">
+<head>
+  <title th:text="${article.title + ' - MyBlog'}">文章详情</title>
+    <link th:href="@{/css/admin.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<main id="main-content">
+  <div class="article-detail">
+    <!-- 头部信息卡片化 -->
+    <div class="article-header card-style">
+      <h1 class="article-title gradient-text" th:text="${article.title}"></h1>
+      <div class="article-meta">
+                <span class="article-date">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span th:text="${#temporals.format(article.createTime, 'yyyy-MM-dd HH:mm')}"></span>
+                </span>
+        <span class="article-category tag-style">
+                    <i class="fas fa-tag"></i>
+                    <span th:text="${article.category}"></span>
+                </span>
+      </div>
+    </div>
+
+    <!-- 内容区域增强 -->
+    <div class="article-content card-style">
+      <div class="content-body" th:utext="${article.content}"></div>
+
+      <!-- 交互增强 -->
+      <div class="action-buttons">
+        <a th:href="@{/}" class="btn-back hover-scale">
+          <i class="fas fa-arrow-left"></i> 返回首页
+        </a>
+<!--        <button class="btn-share hover-scale">-->
+<!--          <i class="fas fa-share-alt"></i> 分享文章-->
+<!--        </button>-->
+      </div>
+    </div>
+  </div>
+</main>
+</html>

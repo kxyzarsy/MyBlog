@@ -1,0 +1,112 @@
+<!-- src/main/resources/templates/about.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::#main-content})}">
+<head>
+    <title>关于我们 - MyBlog</title>
+</head>
+
+<main id="main-content">
+    <!-- Hero Banner 与首页保持相同结构 -->
+    <div class="hero-banner">
+        <h1>技术社区的力量</h1>
+        <p>连接开发者，分享知识，共同成长</p>
+    </div>
+
+    <!-- 用户信息卡片 -->
+    <div sec:authorize="isAuthenticated()" class="user-card article-item">
+        <div class="article-meta">
+            <i class="fas fa-user-circle"></i>
+            用户信息
+        </div>
+        <h2 class="article-title" sec:authentication="name"></h2>
+        <div class="article-content">
+            <div class="user-info-item">
+                <i class="fas fa-shield-alt"></i>
+                <span sec:authentication="principal.authorities"></span>
+            </div>
+
+            <!-- 用户文章列表 -->
+            <div class="user-articles" th:if="${userArticles != null}">
+                <h3 class="section-title">
+                    <i class="fas fa-file-alt"></i> 我的文章
+                </h3>
+
+                <div th:each="article : ${userArticles}" class="article-item">
+                    <div class="article-meta">
+                        <time th:text="${#temporals.format(article.createTime, 'yyyy-MM-dd')}"></time>
+                        <span class="status-tag"
+                              th:classappend="${article.status == T(com.myblog.myblog.entity.Article.ArticleStatus).PUBLISHED} ?
+                          'status-published' : 'status-draft'"
+                              th:text="${article.status.displayName}"></span>
+                    </div>
+                    <h4 class="article-title" th:text="${article.title}"></h4>
+
+                    <!-- 操作按钮 -->
+                    <div class="action-buttons">
+                        <a th:href="@{/admin/articles/edit/{id}(id=${article.id})}"
+                           class="btn-edit">
+                            <i class="fas fa-edit"></i> 编辑
+                        </a>
+                        <form th:action="@{/admin/articles/delete/{id}(id=${article.id})}"
+                              method="post"
+                              class="inline-form">
+                            <button type="submit"
+                                    class="btn-delete"
+                                    onclick="return confirm('确定删除该文章吗？')">
+                                <i class="fas fa-trash"></i> 删除
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div th:if="${#lists.isEmpty(userArticles)}" class="no-results">
+                    <i class="fas fa-file-alt fa-2x"></i>
+                    <p>暂无已发布文章</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 使命宣言 -->
+<!--    <div class="article-container mission-section">-->
+<!--        <div class="article-item mission-card">-->
+<!--            <div class="article-meta">-->
+<!--                <i class="fas fa-lightbulb"></i>-->
+<!--                我们的愿景-->
+<!--            </div>-->
+<!--            <h2 class="article-title">技术驱动未来</h2>-->
+<!--            <div class="article-content">-->
+<!--                <p>构建开放的技术交流平台，降低知识获取门槛</p>-->
+<!--                <ul class="mission-list">-->
+<!--                    <li><i class="fas fa-check-circle"></i> 每周技术文章更新</li>-->
+<!--                    <li><i class="fas fa-check-circle"></i> 开发者互助社区</li>-->
+<!--                    <li><i class="fas fa-check-circle"></i> 开源项目孵化</li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="article-item mission-card">-->
+<!--            <div class="article-meta">-->
+<!--                <i class="fas fa-users"></i>-->
+<!--                社区生态-->
+<!--            </div>-->
+<!--            <h2 class="article-title">连接创造价值</h2>-->
+<!--            <div class="article-content">-->
+<!--                <p>超过10,000名开发者在这里交流经验</p>-->
+<!--                <div class="stats-grid">-->
+<!--                    <div class="stat-item">-->
+<!--                        <div class="stat-number">1.2k+</div>-->
+<!--                        <div class="stat-label">技术文章</div>-->
+<!--                    </div>-->
+<!--                    <div class="stat-item">-->
+<!--                        <div class="stat-number">356</div>-->
+<!--                        <div class="stat-label">开源项目</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+</main>
+</html>

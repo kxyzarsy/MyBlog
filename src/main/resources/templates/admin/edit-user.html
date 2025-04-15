@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑用户</title>
+</head>
+<body>
+<h1>编辑用户</h1>
+<form th:action="@{/admin/users/update}" method="post">
+    <input type="hidden" name="userId" th:value="${user.userId}"> <!-- 修改此处 -->
+
+    <label>用户名：</label>
+    <input type="text" name="username" th:value="${user.username}">
+
+    <label>角色：</label>
+    <select name="role">
+        <option value="USER" th:selected="${user.role == 'USER'}">普通用户</option>
+        <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">管理员</option>
+    </select>
+    <label>密码（留空不修改）：</label>
+    <input type="password" name="newPassword">
+
+    <button type="submit">保存修改</button>
+</form>
+</body>
+</html>

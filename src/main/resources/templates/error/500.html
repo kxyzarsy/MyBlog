@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>500 - 服务器错误</title>
+</head>
+<body>
+<h1>500 错误</h1>
+<p th:text="${errorMessage}">系统内部错误</p>
+<a th:href="@{/}">返回首页</a>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!-- src/main/resources/templates/article-detail.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::#main-content})}">
+
+<head>
+  <title th:text="'${article.title} - MyBlog'">文章详情 - MyBlog</title>
+</head>
+
+<main id="main-content">
+  <article class="article-detail card-style">
+    <header>
+      <h1 th:text="${article.title}"></h1>
+      <div class="article-meta">
+        <time th:text="${#temporals.format(article.publishTime, 'yyyy-MM-dd HH:mm')}"></time>
+        <a class="author-link" href="#">
+          <i class="fas fa-user-edit"></i>
+          <span th:text="${article.author.username}">作者名称</span>
+        </a>
+      </div>
+    </header>
+    <div class="article-content" th:utext="${article.content}"></div>
+    <footer>
+      <div class="container">
+        <a th:href="@{/}" class="back-to-list">
+          <i class="fas fa-arrow-left"></i>
+          返回文章列表
+        </a>
+      </div>
+    </footer>
+  </article>
+</main>
+</html>

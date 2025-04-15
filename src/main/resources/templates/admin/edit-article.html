@@ -1,0 +1,49 @@
+<!-- templates/edit-article.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>编辑文章</title>
+  <!-- 样式可复用原有设计 -->
+  <link th:href="@{/css/admin.css}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</head>
+<body>
+<div class="admin-container">
+  <h1>编辑文章</h1>
+  <form th:action="@{/admin/articles/update/{id}(id=${article.id})}" th:object="${article}" method="post">
+    <!-- 标题 -->
+    <div class="form-group">
+      <label>标题</label>
+      <input type="text" th:field="*{title}" class="form-control" required>
+    </div>
+
+    <!-- 内容 -->
+    <div class="form-group">
+      <label>内容</label>
+      <textarea th:field="*{content}" class="form-control" rows="15" required></textarea>
+    </div>
+
+    <!-- 状态选择 -->
+    <div class="form-group">
+      <label>状态</label>
+      <select th:field="*{status}" class="form-control">
+        <option th:each="status : ${T(com.myblog.myblog.entity.Article.ArticleStatus).values()}"
+                th:value="${status}"
+                th:text="${status.displayName}"></option>
+      </select>
+    </div>
+
+    <!-- 发布时间（可选） -->
+    <div class="form-group">
+      <label>发布时间</label>
+      <input type="datetime-local" th:field="*{publishTime}" class="form-control">
+    </div>
+
+    <button type="submit" class="btn-action">保存修改</button>
+    <a th:href="@{/admin/articles}" class="btn-delete">取消</a>
+  </form>
+</div>
+</body>
+</html>

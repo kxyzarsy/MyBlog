@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>404 - 资源未找到</title>
+</head>
+<body>
+<h1>404 错误</h1>
+<!--/*@thymesVar id="errorMessage" type=""*/-->
+<p th:text="${errorMessage}">页面不存在</p>
+<a th:href="@{/}">返回首页</a>
+</body>
+</html>

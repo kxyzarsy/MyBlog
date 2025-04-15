@@ -1,0 +1,160 @@
+<!-- admin.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理 - MyBlog</title>
+    <link th:href="@{/css/base.css}" rel="stylesheet">
+    <link th:href="@{/css/admin.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="hold-transition">
+<!-- 固定头部 -->
+<header class="header">
+    <div class="header-left">
+        <a href="/admin" class="logo-link">
+            <img th:src="@{/images/logo.png}" alt="Logo" class="logo-image">
+        </a>
+        <form class="search-form" th:action="@{/admin/search}" method="get">
+            <input type="text" name="keyword" placeholder="搜索管理内容..." class="search-input">
+            <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+    <div class="user-info">
+        <div sec:authorize="isAuthenticated()" class="auth-container">
+            <span class="username" sec:authentication="name"></span>
+            <form th:action="@{/logout}" method="post">
+                <button class="btn btn-logout">退出登录</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<!-- 侧边导航栏 -->
+<div class="dashboard-content" th:if="${#strings.equals(currentPath, '/admin')}">
+    <!-- 数据概览卡片组 -->
+    <div class="dashboard-grid">
+        <div class="stats-card card-article">
+            <div class="card-header">
+                <i class="fas fa-file-alt"></i>
+                <h3>内容统计</h3>
+            </div>
+            <div class="card-body">
+                <div class="metric-group">
+                    <div class="metric-item">
+                        <span class="metric-value" th:text="${totalArticles}"></span>
+                        <span class="metric-label">总文章数</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-value">0</span>
+                        <span class="metric-label">本周新增</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-card card-user">
+            <div class="card-header">
+                <i class="fas fa-users"></i>
+                <h3>用户概况</h3>
+            </div>
+            <div class="card-body">
+                <div class="metric-group">
+                    <div class="metric-item">
+                        <span class="metric-value" th:text="${totalUsers}"></span>
+                        <span class="metric-label">注册用户</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-value">100%</span>
+                        <span class="metric-label">活跃用户</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-card card-activity">
+            <div class="card-header">
+                <i class="fas fa-chart-line"></i>
+                <h3>互动数据</h3>
+            </div>
+            <div class="card-body">
+                <div class="metric-group">
+                    <div class="metric-item">
+                        <span class="metric-value">89%</span>
+                        <span class="metric-label">互动率</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-value">1.2k</span>
+                        <span class="metric-label">今日访问</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-content" th:if="${#strings.equals(currentPath, '/admin')}">
+        <!-- 新增管理入口导航 -->
+        <!-- 修改后的管理入口导航部分 -->
+        <div class="management-nav">
+            <a href="/admin/articles" class="nav-card">
+                <div class="nav-icon bg-article">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="nav-info">
+                    <h4>文章管理</h4>
+                    <p>管理现有文章内容</p>
+                </div>
+            </a>
+
+            <a href="/admin/users" class="nav-card">
+                <div class="nav-icon bg-user">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <div class="nav-info">
+                    <h4>用户管理</h4>
+                    <p>管理系统用户权限</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- 数据概览卡片组保持原有结构不变 -->
+        <div class="dashboard-grid">
+            <!-- 原有统计卡片内容 -->
+        </div>
+        <!-- 快捷操作区域增强样式 -->
+        <div class="quick-actions enhanced">
+            <div class="section-header">
+                <h3><i class="fas fa-bolt"></i> 快捷操作</h3>
+                <p>常用管理功能快速入口</p>
+            </div>
+            <div class="action-grid">
+                <!-- 原有操作卡片 -->
+                <a href="/admin/articles/new" class="action-card hover-effect">
+                    <div class="action-icon gradient-article">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <div class="action-info">
+                        <h4>撰写新文章</h4>
+                        <p>开始创作新的博客内容</p>
+                    </div>
+                    <i class="fas fa-chevron-right arrow-bounce"></i>
+                </a>
+                <a href="/admin/users/create" class="action-card hover-effect">
+                    <div class="action-icon gradient-user">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="action-info">
+                        <h4>新增用户</h4>
+                        <p>添加新的系统用户</p>
+                    </div>
+                    <i class="fas fa-chevron-right arrow-bounce"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,548 @@
+/* ===== 增强版博文列表样式 ===== */
+
+
+.article-container {/* 在admin.css中添加全局底部样式 */
+    /* 添加在:root变量声明之后 */
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    #main-content {
+        flex: 1;
+        padding-bottom: 60px; /* 根据footer高度调整 */
+    }
+
+    .footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem 0;
+        border-top: 1px solid var(--border-color);
+        z-index: 1000;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    }
+
+    /* 调整about.html的底部间距 */
+    .about-page #main-content {
+        padding-bottom: 80px;
+    }
+
+    /* 修复管理后台布局 */
+    .admin-container {
+        position: relative;
+        z-index: 1;
+    }
+
+    display: grid;
+    grid-template-columns: 1fr; /* 单列显示 */
+    gap: 1.5rem;
+    padding: 2rem 1rem;
+}
+
+/*.article-container {*/
+/*    display: grid;*/
+/*!*    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));*!  四行并排显示*/
+/*    gap: 1.5rem;*/
+/*    padding: 2rem 1rem;*/
+/*}*/
+
+.article-item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.article-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.article-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.8rem;
+}
+
+.article-date::before {
+    content: "📅 ";
+}
+
+.article-category {
+    background: rgba(185, 52, 216, 0.1);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    color: var(--primary-color);
+}
+
+.article-title {
+    color: var(--text-dark);
+    font-size: 1.4rem;
+    margin: 0 0 1rem 0;
+    line-height: 1.3;
+    position: relative;
+    padding-bottom: 0.8rem;
+}
+
+.article-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--primary-color);
+}
+
+.article-content {
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.article-read-more {
+    display: inline-flex;
+    align-items: center;
+    color: var(--primary-color);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.article-read-more:hover {
+    color: #8b21b0;
+    transform: translateX(5px);
+}
+
+.article-read-more::after {
+    content: "→";
+    margin-left: 0.5rem;
+    transition: transform 0.2s ease;
+}
+
+/* 分页增强样式 */
+.pagination-container {
+    padding: 2rem 0;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.page-link {
+    padding: 0.6rem 1.2rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    color: var(--text-dark);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.page-link:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-2px);
+}
+
+.page-link.active {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 3px 8px rgba(185, 52, 216, 0.2);
+}
+
+/* 无结果样式增强 */
+.no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    grid-column: 1 / -1;
+}
+
+.no-results i {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+.no-results h3 {
+    color: var(--text-dark);
+    margin: 0 0 1rem 0;
+}
+
+.no-results p {
+    color: var(--secondary-color);
+    margin: 0;
+}
+
+
+
+/* ===== 文章详情页增强样式 ===== */
+.article-detail {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem; /* 响应式留白 */
+}
+
+.card-style {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.article-header:hover {
+    transform: translateY(-3px);
+}
+
+.gradient-text {
+    background: linear-gradient(45deg, var(--primary-color), #6c43d9);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: 2.4rem;
+    line-height: 1.3;
+    margin-bottom: 1.5rem;
+}
+
+.article-meta {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    color: var(--secondary-color);
+    font-size: 0.95rem;
+}
+
+.tag-style {
+    background: rgba(185, 52, 216, 0.1);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.content-body {
+    line-height: 1.8;
+    font-size: 1.1rem;
+    color: #444;
+
+    /* 富文本内容样式增强 */
+    h2, h3 {
+        color: var(--text-dark);
+        margin: 1.5rem 0 1rem;
+    }
+
+    img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin: 1rem 0;
+    }
+
+    pre {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        overflow-x: auto;
+    }
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    border-top: 1px solid #eee;
+    padding-top: 2rem;
+}
+
+.hover-scale {
+    transition: transform 0.2s ease;
+
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.8rem 1.5rem;
+    background: var(--primary-color);
+    color: white !important;
+    border-radius: 25px;
+    text-decoration: none;
+    gap: 0.5rem;
+}
+
+.btn-share {
+    background: #f8f9fa;
+    border: 1px solid #eee;
+    color: var(--text-dark);
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+/* 增强文章详情页样式 */
+.article-detail {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.article-detail header {
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 1.5rem;
+}
+
+.article-detail h1 {
+    font-size: 2.2rem;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+    position: relative;
+}
+
+.article-detail h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--primary-color);
+}
+
+.article-meta {
+    display: flex;
+    gap: 1.5rem;
+    color: #666;
+    font-size: 0.95rem;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.article-meta time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.article-meta time::before {
+    content: "📅";
+    font-size: 0.9em;
+}
+
+.article-meta a {
+    color: var(--primary-color);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.article-meta a:hover {
+    text-decoration: underline;
+}
+
+.article-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #444;
+}
+
+.article-content h2,
+.article-content h3 {
+    color: var(--text-dark);
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.article-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.article-content pre {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 1.5rem 0;
+}
+
+.article-content code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+.back-to-list {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    background: var(--primary-color);
+    color: white !important;
+    border-radius: 25px;
+    text-decoration: none;
+    margin-top: 2rem;
+    transition: transform 0.2s ease;
+}
+
+.back-to-list:hover {
+    transform: translateX(-5px);
+    background: #9c36db;
+}
+
+@media (max-width: 768px) {
+    .article-detail {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    .article-detail h1 {
+        font-size: 1.8rem;
+    }
+
+    .article-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+}
+/* 用户文章列表样式 */
+.user-articles {
+    margin-top: 2rem;
+    border-top: 2px solid var(--border-color);
+    padding-top: 1.5rem;
+}
+
+.user-articles .article-item {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    border-left: 3px solid var(--primary-color);
+}
+
+.user-articles .article-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.user-articles .action-buttons {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.user-articles .btn-edit {
+    background: var(--success-color);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    color: white !important;
+    text-decoration: none;
+}
+
+.user-articles .btn-delete {
+    background: var(--danger-color);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    color: white !important;
+    border: none;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .user-articles .action-buttons {
+        flex-direction: column;
+    }
+
+    .user-articles .btn-edit,
+    .user-articles .btn-delete {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .gradient-text {
+        font-size: 1.8rem;
+    }
+
+    .article-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+}
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .article-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .article-content {
+        -webkit-line-clamp: 3;
+    }
+
+    .page-link {
+        padding: 0.5rem 1rem;
+    }
+
+    .hero-banner h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .article-item {
+        padding: 1rem;
+    }
+
+    .article-title {
+        font-size: 1.2rem;
+    }
+
+    .pagination {
+        gap: 0.3rem;
+    }
+}

@@ -1,0 +1,45 @@
+2025-04-05 20:57:11 [restartedMain] DEBUG com.myblog.myblog.MyBlogApplication - Running with Spring Boot v3.3.9, Spring v6.1.17
+2025-04-05 20:57:12 [restartedMain] DEBUG o.s.w.f.ServerHttpObservationFilter - Filter 'webMvcObservationFilter' configured for use
+2025-04-05 20:57:13 [restartedMain] DEBUG org.hibernate.SQL - alter table user add column role varchar(255)
+2025-04-05 20:57:14 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 33 mappings in 'requestMappingHandlerMapping'
+2025-04-05 20:57:14 [restartedMain] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-04-05 20:57:15 [restartedMain] DEBUG o.s.s.web.DefaultSecurityFilterChain - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CsrfFilter, LogoutFilter, UsernamePasswordAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-04-05 20:57:15 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-04-05 20:57:15 [restartedMain] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@3c212811
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@62f35cb9
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/", parameters={}
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.myblog.myblog.controller.BlogPostController#index(int, int, Model, HttpServletRequest)
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG org.hibernate.SQL - select a1_0.id,a1_0.author_id,a1_0.content,a1_0.create_time,a1_0.publish_time,a1_0.status,a1_0.title from article a1_0 limit ?,?
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG org.hibernate.SQL - select count(a1_0.id) from article a1_0
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /css/base.css
+2025-04-05 20:57:39 [http-nio-9090-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /css/article-list.css
+2025-04-05 20:57:39 [http-nio-9090-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /images/logo.png
+2025-04-05 20:57:39 [http-nio-9090-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /images/logo.png
+2025-04-05 20:57:39 [http-nio-9090-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /css/article-list.css
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /css/base.css
+2025-04-05 20:57:39 [http-nio-9090-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/logo.png", parameters={}
+2025-04-05 20:57:39 [http-nio-9090-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/css/article-list.css", parameters={}
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/css/base.css", parameters={}
+2025-04-05 20:57:39 [http-nio-9090-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-04-05 20:57:39 [http-nio-9090-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-04-05 20:57:39 [http-nio-9090-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-04-05 20:57:39 [http-nio-9090-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-04-05 20:57:39 [http-nio-9090-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-04-05 20:57:40 [http-nio-9090-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /favicon.ico
+2025-04-05 20:57:40 [http-nio-9090-exec-5] DEBUG o.s.s.web.DefaultRedirectStrategy - Redirecting to http://localhost:9090/login
+2025-04-05 20:57:40 [http-nio-9090-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /login
+2025-04-05 20:57:40 [http-nio-9090-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /login
+2025-04-05 20:57:40 [http-nio-9090-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/login", parameters={}
+2025-04-05 20:57:40 [http-nio-9090-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.myblog.myblog.controller.LoginController#login(Model, HttpSession)
+2025-04-05 20:57:40 [http-nio-9090-exec-6] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected '*/*' given [image/avif, image/webp, image/apng, image/svg+xml, image/*, */*;q=0.8]
+2025-04-05 20:57:40 [http-nio-9090-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK

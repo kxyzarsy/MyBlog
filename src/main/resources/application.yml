@@ -1,0 +1,38 @@
+spring:
+
+  #数据库文件
+  datasource:
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/myblog?useSSL=false&serverTimezone=UTC
+  jpa:
+    hibernate:
+      ddl-auto: update # 自动更新表结构
+    show-sql: true  # 显示SQL语句（调试用）
+
+  application:
+    name: MyBlog
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+
+#  web:
+    #resources:
+      #static-locations: classpath:/static/ # 自定义静态资源路径
+
+server:
+  port: 9090
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+  file:
+    name: app.log
