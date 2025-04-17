@@ -29,7 +29,7 @@ server:
     encoding:
       charset: UTF-8
       force: true
-
+  address: 0.0.0.0
 logging:
   level:
     root: INFO
