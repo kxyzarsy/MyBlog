@@ -3,15 +3,178 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文章管理</title>
     <link th:href="@{/css/admin.css}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 自定义增强样式 */
+        .card-style {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin: 20px;
+        }
+
+        .management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+
+        .data-table tr:hover td {
+            background-color: #f8f9fa;
+        }
+
+        .status-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-published {
+            background: #e6f4ea;
+            color: #0d6efd;
+        }
+
+        .status-draft {
+            background: #fff3cd;
+            color: #ffc107;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-edit {
+            background: #e7f1ff;
+            color: #0d6efd;
+        }
+
+        .btn-edit:hover {
+            background: #d0e2ff;
+        }
+
+        .btn-delete {
+            background: #f8d7da;
+            color: #dc3545;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-delete:hover {
+            background: #f1aeb5;
+        }
+
+        .pagination-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .page-item {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            background: #f8f9fa;
+            color: #495057;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .page-item:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .page-item.active {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        #pageSize {
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            background: white;
+        }
+
+        @media (max-width: 768px) {
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .action-buttons {
+                flex-wrap: wrap;
+            }
+
+            .btn-icon {
+                padding: 0.5rem;
+            }
+
+            .btn-icon i {
+                margin-right: 0;
+            }
+        }
+    </style>
 </head>
 <body>
 <div class="card-style">
     <div class="management-header">
-        <h1 style="color: var(--primary-color);margin-bottom:1.5rem">文章管理</h1>
-        <a href="/admin/articles/new" class="btn-action">
+        <h1 style="margin:0;font-size:1.75rem;color:#212529">文章管理</h1>
+        <a href="/admin/articles/new" class="btn-action" style="background:#0d6efd;color:white;padding:0.75rem 1.5rem;border-radius:8px">
             <i class="fas fa-plus"></i> 新建文章
         </a>
     </div>
@@ -31,21 +194,23 @@
             <td th:text="${article.title}"></td>
             <td th:text="${article.author.username}"></td>
             <td>
-                    <span class="status-tag"
-                          th:classappend="${article.status == 'PUBLISHED'} ? 'status-published' : 'status-draft'"
-                          th:text="${article.status.displayName}"></span>
+                <span class="status-tag"
+                      th:classappend="${article.status == 'PUBLISHED'} ? 'status-published' : 'status-draft'"
+                      th:text="${article.status.displayName}"></span>
             </td>
             <td th:text="${#temporals.format(article.publishTime, 'yyyy-MM-dd HH:mm')}"></td>
             <td>
                 <div class="action-buttons">
                     <a th:href="@{/admin/articles/edit/{id}(id=${article.id})}"
                        class="btn-icon btn-edit">
-                        <i class="fas fa-pencil-alt">编辑</i>
+                        <i class="fas fa-pencil-alt"></i>
+                        <span>编辑</span>
                     </a>
                     <form th:action="@{/admin/articles/delete/{id}(id=${article.id})}" method="post">
                         <button type="submit" class="btn-icon btn-delete"
                                 onclick="return confirm('确认删除？')">
-                            <i class="fas fa-trash">删除</i>
+                            <i class="fas fa-trash"></i>
+                            <span>删除</span>
                         </button>
                     </form>
                 </div>
@@ -53,24 +218,21 @@
         </tr>
         </tbody>
     </table>
-    <!-- 在表格下方添加分页 -->
+
     <div class="pagination-wrapper">
         <nav class="pagination">
-            <!-- 上一页 -->
             <a th:if="${currentPage > 1}"
                th:href="@{/admin/articles(page=${currentPage - 1}, size=${pageSize})}"
                class="page-item">
                 <i class="fas fa-chevron-left"></i> 上一页
             </a>
 
-            <!-- 页码导航 -->
             <a th:each="page : ${#numbers.sequence(1, totalPages)}"
                th:href="@{/admin/articles(page=${page}, size=${pageSize})}"
                th:classappend="${page == currentPage} ? 'active' : ''"
                class="page-item"
                th:text="${page}"></a>
 
-            <!-- 下一页 -->
             <a th:if="${currentPage < totalPages}"
                th:href="@{/admin/articles(page=${currentPage + 1}, size=${pageSize})}"
                class="page-item">
@@ -78,10 +240,9 @@
             </a>
         </nav>
 
-        <!-- 每页数量选择 -->
         <div class="page-size-selector">
             <span>每页显示：</span>
-            <select id="pageSize" onchange="changePageSize(this.value)">
+            <select id="pageSize" onchange="changePageSize(this.value)" class="modern-select">
                 <option value="5" th:selected="${pageSize == 5}">5</option>
                 <option value="8" th:selected="${pageSize == 8}">8</option>
                 <option value="15" th:selected="${pageSize == 15}">15</option>
@@ -89,14 +250,12 @@
             </select>
         </div>
     </div>
-
-    <script>
-        // 分页大小切换
-        function changePageSize(size) {
-            window.location.href = `/admin/articles?page=1&size=${size}`;
-        }
-    </script>
-
 </div>
+
+<script>
+    function changePageSize(size) {
+        window.location.href = `/admin/articles?page=1&size=${size}`;
+    }
+</script>
 </body>
 </html>

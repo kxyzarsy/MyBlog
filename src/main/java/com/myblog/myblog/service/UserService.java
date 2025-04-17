@@ -1,5 +1,6 @@
 package com.myblog.myblog.service;
 
+import com.myblog.myblog.dto.UserCreateForm;
 import com.myblog.myblog.entity.User;
 import com.myblog.myblog.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,7 +56,19 @@ public class UserService {
 
         userRepository.save(existingUser);
     }
+    public void createUser(UserCreateForm form) {
+        if (usernameExists(form.getUsername())) {
+            throw new IllegalArgumentException("用户名已存在");
+        }
 
+        User user = new User();
+        user.setUsername(form.getUsername());
+        user.setPassword(passwordEncoder.encode(form.getPassword()));
+        user.setRole(form.getRole());
+        userRepository.save(user);
+    }
 
-
+    public boolean usernameExists(String username) {
+        return userRepository.existsByUsername(username);
+    }
 }

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新建用户 | 管理后台</title>
+    <link th:href="@{/css/admin.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --error-color: #dc2626;
+            --border-color: #dcd0d0;
+            --shadow-md: 0 4px 24px rgba(0,0,0,0.08);
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card-style {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            outline: none;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: #bf5656;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #ae8dd8;
+            color: #ffffff;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 0 0.5rem;
+            }
+            .card-style {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-container">
+    <div class="card-style">
+        <div class="management-header">
+            <h1 class="page-title">新建用户</h1>
+            <a th:href="@{/admin/users}" class="btn-action btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                <span>返回列表</span>
+            </a>
+        </div>
+
+        <form th:action="@{/admin/users/create}" method="post" th:object="${userForm}">
+            <div class="space-y-6">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                <!-- 用户名 -->
+                <div class="form-group">
+                    <label class="form-label">用户名</label>
+                    <input type="text" th:field="*{username}"
+                           class="form-control"
+                           placeholder="请输入3-20位字符"
+                           minlength="3"
+                           maxlength="20"
+                           required>
+                    <div th:if="${#fields.hasErrors('username')}" class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span th:errors="*{username}"></span>
+                    </div>
+                </div>
+
+                <!-- 密码组 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <input type="password" th:field="*{password}"
+                               class="form-control"
+                               placeholder="至少6位字符"
+                               minlength="6"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">确认密码</label>
+                        <input type="password" th:field="*{confirmPassword}"
+                               class="form-control"
+                               placeholder="再次输入密码"
+                               minlength="6"
+                               required>
+                    </div>
+                </div>
+
+                <!-- 用户角色 -->
+                <div class="form-group">
+                    <label class="form-label">用户角色</label>
+                    <select th:field="*{role}" class="form-control" required>
+                        <option value="">请选择用户角色</option>
+                        <option value="USER">普通用户</option>
+                        <option value="ADMIN">管理员</option>
+                    </select>
+                </div>
+
+                <!-- 表单操作 -->
+                <div class="flex justify-end gap-4 mt-8">
+                    <button type="reset" class="btn-action btn-secondary">
+                        <i class="fas fa-undo"></i>
+                        <span>重置表单</span>
+                    </button>
+                    <button type="submit" class="btn-action btn-primary">
+                        <i class="fas fa-user-plus"></i>
+                        <span>创建用户</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // 增强密码校验
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const submitBtn = document.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> 提交中...`;
+        submitBtn.disabled = true;
+
+        const password = document.querySelector('input[name="password"]');
+        const confirmPassword = document.querySelector('input[name="confirmPassword"]');
+
+        if(password.value !== confirmPassword.value) {
+            e.preventDefault();
+            submitBtn.innerHTML = `<i class="fas fa-user-plus"></i> 创建用户`;
+            submitBtn.disabled = false;
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message mt-2';
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> 两次输入的密码不一致`;
+            confirmPassword.parentElement.appendChild(errorDiv);
+            confirmPassword.focus();
+        }
+    });
+
+    // 实时用户名校验（保留原有功能）
+    document.querySelector('input[name="username"]').addEventListener('input', function() {
+        const errorDivs = this.parentElement.querySelectorAll('.error-message');
+        errorDivs.forEach(div => div.remove());
+
+        if(this.value.length >= 3) {
+            fetch(`/admin/users/check-username?username=${encodeURIComponent(this.value)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if(data.exists) {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'error-message mt-2';
+                        errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> 该用户名已被注册`;
+                        this.parentElement.appendChild(errorDiv);
+                    }
+                });
+        }
+    });
+</script>
+</body>
+</html>

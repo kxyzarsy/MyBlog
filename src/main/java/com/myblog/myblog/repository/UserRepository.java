@@ -11,6 +11,5 @@ import java.util.Optional;
 @Service
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username); // 方法名必须为 findBy[字段名]
-
-
+    boolean existsByUsername(String username);
 }

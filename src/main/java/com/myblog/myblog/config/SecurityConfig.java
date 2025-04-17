@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -59,6 +60,11 @@ public class    SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
+
+                )
+                .headers(headers -> headers
+                        .cacheControl(HeadersConfigurer.CacheControlConfig::disable) // 禁用所有缓存
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin) // 可选：防止点击劫持
                 );
 
 
