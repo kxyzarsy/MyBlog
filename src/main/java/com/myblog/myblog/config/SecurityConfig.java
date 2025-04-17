@@ -62,11 +62,11 @@ public class    SecurityConfig {
                         .permitAll()
 
                 )
-                .headers(headers -> headers
-                        .cacheControl(HeadersConfigurer.CacheControlConfig::disable) // 禁用所有缓存
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin) // 可选：防止点击劫持
-                );
-
+                .headers(headers -> headers  // 修复链式调用
+                        .cacheControl(HeadersConfigurer.CacheControlConfig::disable)
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                )
+                .userDetailsService(customUserDetailsService);
 
         return http.build();
     }

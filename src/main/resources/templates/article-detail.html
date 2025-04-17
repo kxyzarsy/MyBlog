@@ -1,33 +1,190 @@
-<!-- src/main/resources/templates/article-detail.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: layout(~{::title}, ~{::#main-content})}">
 
 <head>
   <title th:text="'${article.title} - MyBlog'">文章详情 - MyBlog</title>
+  <style>
+    /* 文章详情样式 */
+    .article-detail {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+
+    .article-meta {
+      display: flex;
+      gap: 1.5rem;
+      color: #6b7280;
+      margin: 1rem 0 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .article-content {
+      font-size: 1.125rem;
+      line-height: 1.8;
+      margin-bottom: 3rem;
+    }
+
+    /* 评论区域 */
+    .comment-section {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .comment-list {
+      margin: 2rem 0;
+    }
+
+    .comment-item {
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      background: #f9fafb;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .comment-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .comment-author {
+      font-weight: 500;
+      color: #1f2937;
+    }
+
+    .comment-time {
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+
+    /* 评论表单 */
+    .comment-form {
+      background: #f3f4f6;
+      padding: 2rem;
+      border-radius: 8px;
+    }
+
+    .comment-editor {
+      width: 100%;
+      min-height: 120px;
+      padding: 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      resize: vertical;
+    }
+
+    .comment-submit {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    @media (max-width: 768px) {
+      .article-detail {
+        padding: 1.5rem;
+        margin: 1rem;
+      }
+      .comment-form {
+        padding: 1rem;
+      }
+    }
+  </style>
 </head>
 
 <main id="main-content">
-  <article class="article-detail card-style">
+  <article class="article-detail">
     <header>
-      <h1 th:text="${article.title}"></h1>
+      <h1 class="text-3xl font-bold" th:text="${article.title}"></h1>
       <div class="article-meta">
         <time th:text="${#temporals.format(article.publishTime, 'yyyy-MM-dd HH:mm')}"></time>
-        <a class="author-link" href="#">
-          <i class="fas fa-user-edit"></i>
+        <a class="author-link flex items-center" href="#">
+          <i class="fas fa-user-edit mr-1"></i>
           <span th:text="${article.author.username}">作者名称</span>
         </a>
       </div>
     </header>
+
     <div class="article-content" th:utext="${article.content}"></div>
+
+    <!-- 评论区域 -->
+    <!-- 修正后的评论表单 -->
+    <section class="comment-section">
+      <h3 class="text-xl font-semibold mb-4">评论（<span th:text="${#lists.size(comments)}">0</span>）</h3>
+
+      <!-- 评论列表 -->
+      <div class="comment-list">
+        <div class="comment-item" th:each="comment : ${comments}">
+          <!-- 评论内容 -->
+        </div>
+      </div>
+
+      <!-- 修正的表单 -->
+      <div class="comment-form">
+        <form th:action="@{/comments}" method="post">
+          <textarea name="content" class="comment-editor" placeholder="输入评论..."></textarea>
+          <input type="hidden" name="articleId" th:value="${article.id}"/>
+          <div class="comment-submit">
+            <button type="submit" class="btn-primary">提交评论</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+
     <footer>
-      <div class="container">
-        <a th:href="@{/}" class="back-to-list">
-          <i class="fas fa-arrow-left"></i>
-          返回文章列表
+      <div class="mt-6">
+        <a th:href="@{/}" class="btn-secondary">
+          <i class="fas fa-arrow-left mr-2"></i>返回文章列表
         </a>
       </div>
     </footer>
   </article>
 </main>
+
+<script>
+  // AJAX评论提交（可选）
+  document.querySelector('.comment-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+            .then(response => response.json())
+            .then(data => {
+              if(data.success) {
+                // 动态添加新评论
+                const commentList = document.querySelector('.comment-list');
+                const newComment = document.createElement('div');
+                newComment.className = 'comment-item';
+                newComment.innerHTML = `
+        <div class="comment-header">
+          <span class="comment-author">${data.username}</span>
+          <span class="comment-time">${new Date().toLocaleString()}</span>
+        </div>
+        <div class="comment-content">${data.content}</div>
+      `;
+                commentList.prepend(newComment);
+                form.reset();
+              } else {
+                alert(data.message || '评论提交失败');
+              }
+            })
+            .catch(error => console.error('Error:', error));
+  });
+</script>
 </html>

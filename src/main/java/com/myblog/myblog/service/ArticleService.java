@@ -4,6 +4,7 @@ import com.myblog.myblog.entity.Article;
 import com.myblog.myblog.exception.ArticleNotFoundException;
 import com.myblog.myblog.repository.ArticleRepository;
 import com.myblog.myblog.entity.User; // 确保此导入存在
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -59,5 +60,10 @@ public class ArticleService {
 
     public List<Article> findByAuthor(User user) { // 参数类型正确
         return articleRepository.findByAuthor(user);
+    }
+
+    public Article getById(Long id) {
+        return articleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("文章不存在"));
     }
 }

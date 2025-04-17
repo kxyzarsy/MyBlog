@@ -31,6 +31,8 @@ public class User implements UserDetails { // 确保实现 UserDetails
 
 
 
+
+
     @PrePersist // 新增的JPA生命周期回调方法
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -48,10 +50,12 @@ public class User implements UserDetails { // 确保实现 UserDetails
     }
 
     // 必须实现 UserDetails 接口的所有方法
+    // User.java
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
+        return Collections.singletonList(new SimpleGrantedAuthority(role));
     }
+
 
     @Override
     public String getPassword() {

@@ -1,8 +1,11 @@
 package com.myblog.myblog.controller;
 
+import com.myblog.myblog.dto.CommentCreateRequest;
+import com.myblog.myblog.entity.Comment;
 import com.myblog.myblog.entity.User;
 import com.myblog.myblog.entity.Article;
 import com.myblog.myblog.service.ArticleService;
+import com.myblog.myblog.service.CommentService;
 import com.myblog.myblog.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
@@ -21,10 +24,12 @@ import java.util.List;
 public class BlogPostController {
     private final ArticleService articleService;
     private final UserService userService;
+    private final CommentService commentService;
 
-    public BlogPostController(ArticleService articleService, UserService userService) {
+    public BlogPostController(ArticleService articleService, UserService userService,CommentService commentService ) {
         this.articleService = articleService;
         this.userService = userService; // 初始化UserService
+        this.commentService = commentService;
     }
 
     // 保持原有搜索功能不变
@@ -66,6 +71,9 @@ public class BlogPostController {
         return articleService.findArticleById(id)
                 .map(article -> {
                     model.addAttribute("article", article);
+                    List<Comment> comments = commentService.getCommentsByArticleId(id);
+                    model.addAttribute("comments", comments);
+                    model.addAttribute("commentForm", new CommentCreateRequest());
                     return "article-detail"; // 确保返回正确的模板名称
                 })
                 .orElseGet(() -> {

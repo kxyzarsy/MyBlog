@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "article")
 public class Article {
+
+
     public enum ArticleStatus {
         DRAFT("草稿"), PUBLISHED("已发布");
 
