@@ -3,7 +3,7 @@ name: Deploy to Tencent Cloud Server
 on:
   push:
     branches:
-      - master  # 修改为你要部署的分支
+      - master
 
 jobs:
   deploy:
@@ -19,10 +19,21 @@ jobs:
 
       - name: Deploy to server
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} << EOF
-          cd /MyBlog/Myblog  # 替换为你的项目路径
-          git pull origin master      # 修改为你要拉取的分支
-              npm install               # 安装依赖
-              npm run build             # 构建项目
-              pm2 restart app           # 重启应用（如果使用 pm2 管理进程）
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} << 'EOF'
+          # 安装依赖
+          sudo apt update -y
+          sudo apt install -y maven openjdk-17-jdk
+
+          # 初始化仓库（如果不存在）
+          if [ ! -d "/home/ubuntu/MyBlog" ]; then
+            git clone git@github.com:kxyzarsy/MyBlog.git /home/ubuntu/MyBlog
+          fi
+
+          # 拉取代码并构建
+          cd /home/ubuntu/MyBlog
+          git pull origin master
+          mvn clean package -DskipTests
+
+          # 重启服务
+          sudo systemctl restart myblog
           EOF
