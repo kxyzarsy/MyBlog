@@ -15,25 +15,18 @@ jobs:
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.7.0
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # 确保变量名一致
 
       - name: Deploy to server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} << 'EOF'
-          # 安装依赖
           sudo apt update -y
           sudo apt install -y maven openjdk-17-jdk
-
-          # 初始化仓库（如果不存在）
           if [ ! -d "/home/ubuntu/MyBlog" ]; then
             git clone git@github.com:kxyzarsy/MyBlog.git /home/ubuntu/MyBlog
           fi
-
-          # 拉取代码并构建
           cd /home/ubuntu/MyBlog
           git pull origin master
           mvn clean package -DskipTests
-
-          # 重启服务
           sudo systemctl restart myblog
           EOF
