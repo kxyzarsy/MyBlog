@@ -1,9 +1,9 @@
-name: Deploy with SSH
+name: Debug SSH Connection
 
 on: [push]
 
 jobs:
-  deploy:
+  debug:
     runs-on: ubuntu-latest
     steps:
       - name: Install SSH key
@@ -11,5 +11,8 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: List loaded keys
+        run: ssh-add -l
+
       - name: Test SSH connection
-        run: ssh -T git@github.com  # 测试连接到 GitHub（预期看到 "successfully authenticated" 但无 shell 访问）
+        run: ssh -T -v git@github.com
