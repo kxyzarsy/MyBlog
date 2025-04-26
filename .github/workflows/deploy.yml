@@ -1,32 +1,15 @@
-name: Deploy to Tencent Cloud Server
+name: Deploy with SSH
 
-on:
-  push:
-    branches:
-      - master
+on: [push]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up SSH
+      - name: Install SSH key
         uses: webfactory/ssh-agent@v0.7.0
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # 确保变量名一致
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy to server
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_IP }} << 'EOF'
-          sudo apt update -y
-          sudo apt install -y maven openjdk-17-jdk
-          if [ ! -d "/home/ubuntu/MyBlog" ]; then
-            git clone git@github.com:kxyzarsy/MyBlog.git /home/ubuntu/MyBlog
-          fi
-          cd /home/ubuntu/MyBlog
-          git pull origin master
-          mvn clean package -DskipTests
-          sudo systemctl restart myblog
-          EOF
+      - name: Test SSH connection
+        run: ssh -T git@github.com  # 测试连接到 GitHub（预期看到 "successfully authenticated" 但无 shell 访问）
