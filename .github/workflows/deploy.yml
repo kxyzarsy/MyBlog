@@ -1,4 +1,4 @@
-name: Debug SSH Connection
+name: Debug SSH
 
 on: [push]
 
@@ -11,8 +11,12 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: List loaded keys
-        run: ssh-add -l
+
+      - name: Show public key fingerprint
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+          ssh-keygen -lf key.pem
 
       - name: Test SSH connection
         run: ssh -T -v git@github.com
