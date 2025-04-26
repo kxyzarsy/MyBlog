@@ -1,0 +1,4 @@
+[2025-04-18 04:10:30.957] - 13208 信息 [restartedMain] --- org.apache.catalina.core.StandardService: Starting service [Tomcat]
+[2025-04-18 04:10:30.967] - 13208 信息 [restartedMain] --- org.apache.catalina.core.StandardEngine: Starting Servlet engine: [Apache Tomcat/10.1.36]
+[2025-04-18 04:10:31.029] - 13208 信息 [restartedMain] --- org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]: Initializing Spring embedded WebApplicationContext
+[2025-04-18 04:10:36.551] - 13208 信息 [RMI TCP Connection(2)-192.168.123.58] --- org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]: Initializing Spring DispatcherServlet 'dispatcherServlet'
