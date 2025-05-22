@@ -8,140 +8,118 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(/images/2.png) no-repeat fixed center 0;
+            font-family: sans-serif;
+            background: url(/images/2.png) no-repeat fixed center 0;
             background-size: cover;
-            min-height: 100vh;
         }
-
         .login-box {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 400px;
-            padding: 2.5rem;
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
+            width: 400px;
+            padding: 40px;
+            background: rgba(109, 108, 110, 0.8);
+            box-shadow: 0 15px 25px rgba(95, 101, 101, 0.5);
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            justify-content: center;
         }
 
         h2 {
+            margin: 0 0 30px;
+            color: #fff;
             text-align: center;
-            color: #2c3e50;
-            margin: 0 0 1.5rem;
             font-size: 1.8rem;
-        }
-
-        .login-toggle {
-            display: flex;
-            border-bottom: 2px solid #e0e0e0;
-            margin-bottom: 1rem;
-        }
-
-        .toggle-item {
-            flex: 1;
-            text-align: center;
-            padding: 0.8rem;
-            cursor: pointer;
-            color: #7f8c8d;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .toggle-item.active {
-            color: #3498db;
-            border-bottom: 2px solid #3498db;
-            margin-bottom: -2px;
-        }
-
-        .login-method {
-            display: none;
-        }
-
-        .login-method.active {
-            display: block;
         }
 
         .login-field {
             position: relative;
-            margin-bottom: 1.5rem;
+            margin-bottom: 30px;
         }
 
         input {
             width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        input:focus {
+            padding: 10px 0;
+            font-size: 16px;
+            color: #fff;
+            border: none;
+            border-bottom: 1px solid #fff;
+            background: transparent;
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
 
         label {
             position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #95a5a6;
+            top: 10px;
+            left: 0;
+            color: #fff;
             pointer-events: none;
-            transition: all 0.3s ease;
-            background: white;
-            padding: 0 4px;
+            transition: 0.5s;
         }
 
         input:focus ~ label,
-        input:not(:placeholder-shown) ~ label {
-            top: 0;
-            font-size: 0.85rem;
-            color: #3498db;
+        input:valid ~ label {
+            top: -15px;
+            font-size: 12px;
+            color: aqua;
         }
 
         button[type="submit"] {
-            width: 100%;
-            padding: 12px;
-            background: #3498db;
-            color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 1rem;
+            background: linear-gradient(135deg, #2d8cf0 0%, #1a73e8 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            width: 50%;
+            margin: 20px auto 0;
+            display: block;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
         button[type="submit"]:hover {
-            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(45, 140, 240, 0.3);
         }
 
         .error-message {
-            color: #e74c3c;
-            background: #fdeded;
+            color: #ff4444;
+            background-color: #ffebee;
+            border: 1px solid #ff4444;
+            border-radius: 4px;
             padding: 12px;
-            border-radius: 6px;
-            margin: 1rem 0;
-            font-size: 0.9rem;
+            margin: 0 auto 20px;
+            text-align: center;
+            max-width: 80%;
+            font-size: 14px;
+            animation: fadeIn 0.3s ease-in;
         }
 
         a {
             display: block;
             text-align: center;
-            color: #3498db;
+            color: aqua;
             text-decoration: none;
             font-size: 0.9rem;
-            margin-top: 1rem;
+            margin-top: 15px;
         }
 
         a:hover {
             text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -149,30 +127,21 @@
 <div class="login-box">
     <h2>MyBlog登录</h2>
 
-    <div class="login-toggle">
-        <div class="toggle-item active" onclick="switchMethod('account')">账号登录</div>
-        <div class="toggle-item" onclick="switchMethod('email')">邮箱登录</div>
-    </div>
+<!--    <div class="login-toggle">-->
+<!--        <div class="toggle-item active" onclick="switchMethod('account')">账号登录</div>-->
+<!--        <div class="toggle-item" onclick="switchMethod('email')">邮箱登录</div>-->
+<!--    </div>-->
 
     <form th:action="@{/login}" method="post">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        <div class="login-method active" id="accountLogin">
-            <div class="login-field">
-                <input type="text" name="username" placeholder=" " required> <!-- 修改name为username -->
-                <label>用户名/邮箱</label>
-            </div>
-        </div>
 
-        <!-- 邮箱登录部分初始状态无 required -->
-        <div class="login-method" id="emailLogin">
-            <div class="login-field">
-                <input type="email" name="username" placeholder=" "> <!-- 移除 required -->
-                <label>注册邮箱</label>
-            </div>
+        <div class="login-field">
+            <input type="text" name="username" required>
+            <label>用户名/邮箱</label>
         </div>
 
         <div class="login-field">
-            <input type="password" name="password" placeholder=" " required>
+            <input type="password" name="password" required>
             <label>密码</label>
         </div>
 
@@ -180,7 +149,7 @@
             ⚠ <span th:text="${errorMessage}"></span>
         </div>
 
-        <button type="submit">登录</button>
+        <button type="submit">登 录</button>
         <a th:href="@{/register}">没有账号？立即注册</a>
     </form>
 </div>

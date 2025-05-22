@@ -3,16 +3,24 @@ package com.myblog.myblog.controller;
 import com.myblog.myblog.entity.Article;
 import com.myblog.myblog.exception.NotFoundException;
 import com.myblog.myblog.service.ArticleService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 
 @Controller
 @RequestMapping("/admin/article")
 public class ArticleController {
 
     private final ArticleService articleService;
+    private static final List<String> SENSITIVE_WORDS = Arrays.asList(
+            "色情", "赌博", "毒品", "诈骗", "暴力"
+    );
 
     public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
@@ -64,5 +72,27 @@ public class ArticleController {
         articleService.updateArticle(article);
         return "redirect:/admin/articles"; // 修正为 /admin/articles
     }
+
+
+        @PostMapping
+        public String createArticle(@Valid Article article) {
+            // 敏感词检测
+            boolean hasSensitive = checkSensitiveContent(article);
+
+            if(hasSensitive) {
+                article.setStatus(Article.ArticleStatus.REJECTED);
+                article.setRejectReason("包含系统拦截词汇");
+            } else {
+                article.setStatus(Article.ArticleStatus.PENDING_REVIEW);
+            }
+
+            articleService.saveArticle(article);
+            return "redirect:/about";
+        }
+
+        private boolean checkSensitiveContent(Article article) {
+            String content = article.getContent() + " " + article.getTitle();
+            return SENSITIVE_WORDS.stream().anyMatch(content::contains);
+        }
 
 }

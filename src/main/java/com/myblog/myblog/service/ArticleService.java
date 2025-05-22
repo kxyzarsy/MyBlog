@@ -54,6 +54,10 @@ public class ArticleService {
         articleRepository.save(article);
 
     }
+
+    public void saveArticle(Article article) {
+        this.save(article); // 调用原有的save方法
+    }
     public long countAllArticles() {
         return articleRepository.count();
     }
