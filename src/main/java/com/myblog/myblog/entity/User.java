@@ -29,6 +29,12 @@ public class User implements UserDetails { // 确保实现 UserDetails
     @Column(name = "role")     // 对应表中的 role 列
     private String role;
 
+    @Column(name = "email", unique = true) // 新增邮箱字段（唯一约束）
+    private String email;
+
+    @Column(name = "enabled") // 新增激活状态字段
+    private boolean enabled = false;
+
 
 
 
@@ -53,7 +59,8 @@ public class User implements UserDetails { // 确保实现 UserDetails
     // User.java
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(role));
+        String authority = "ROLE_" + role.toUpperCase(); // 确保格式统一
+        return Collections.singletonList(new SimpleGrantedAuthority(authority));
     }
 
 
@@ -63,7 +70,7 @@ public class User implements UserDetails { // 确保实现 UserDetails
     }
     @Override
     public String getUsername() {
-        return username;
+        return this.username; // ✅ 返回真实的username字段
     }
     @Override
     public boolean isAccountNonExpired() {
@@ -81,6 +88,5 @@ public class User implements UserDetails { // 确保实现 UserDetails
     public boolean isEnabled() {
         return true;
     }
-
 
 }

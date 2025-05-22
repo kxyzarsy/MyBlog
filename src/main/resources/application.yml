@@ -1,4 +1,22 @@
 spring:
+  mail:
+    host: smtp.163.com
+    port: 465  # 或 994
+    username: kxyatxy116@163.com
+    password: LAVDk33zXjXPcSGu  # 必须是SMTP授权码，非登录密码
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enable: true
+          connection timeout: 5000
+          timeout: 5000
+          write timeout: 5000
 
   #数据库文件
   datasource:
@@ -10,6 +28,7 @@ spring:
     hibernate:
       ddl-auto: update # 自动更新表结构
     show-sql: true  # 显示SQL语句（调试用）
+    open-in-view: false
 
   application:
     name: MyBlog

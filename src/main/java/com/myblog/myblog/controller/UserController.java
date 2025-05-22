@@ -12,6 +12,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Collections;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -83,10 +87,28 @@ public class UserController {
     }
 
     // UserController.java 修改updateUser方法
+    // UserController.java 修改updateUser方法
     @PostMapping("/admin/users/update")
-    public String updateUser(@ModelAttribute User updatedUser) {
-        userService.updateUser(updatedUser); // 调用Service处理业务逻辑
-        return "redirect:/admin/users";
+    public String updateUser(
+            @ModelAttribute User updatedUser,
+            RedirectAttributes redirectAttributes) { // 添加重定向属性
+
+        try {
+            userService.updateUser(updatedUser);
+            redirectAttributes.addFlashAttribute("successMessage", "用户信息更新成功");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+
+        return "redirect:/admin/users/edit/" + updatedUser.getUserId(); // 返回编辑页以刷新数据
+    }
+
+    //添加邮箱校验接口
+    @GetMapping("/admin/users/check-email")
+    @ResponseBody
+    public Map<String, Boolean> checkEmailExists(@RequestParam String email) {
+        boolean exists = userRepository.existsByEmail(email);
+        return Collections.singletonMap("exists", exists);
     }
 
 

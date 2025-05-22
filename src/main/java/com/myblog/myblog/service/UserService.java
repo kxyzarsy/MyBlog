@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -34,13 +35,21 @@ public class UserService {
         return userRepository.count();
     }
     // UserService.java 确保正确处理密码
+    // UserService.java 修改 updateUser 方法
     public void updateUser(User updatedUser) {
         User existingUser = userRepository.findById(updatedUser.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("用户不存在"));
 
-        // 仅更新允许修改的字段
+        // 邮箱唯一性校验（排除自身）
+        if (!updatedUser.getEmail().equals(existingUser.getEmail())) {
+            if (userRepository.existsByEmail(updatedUser.getEmail())) {
+                throw new IllegalArgumentException("邮箱已被其他用户使用");
+            }
+            existingUser.setEmail(updatedUser.getEmail()); // 更新邮箱
+        }
+
+        // 用户名唯一性校验
         if (!updatedUser.getUsername().equals(existingUser.getUsername())) {
-            // 用户名唯一性校验
             userRepository.findByUsername(updatedUser.getUsername())
                     .ifPresent(u -> { throw new IllegalArgumentException("用户名已存在"); });
             existingUser.setUsername(updatedUser.getUsername());
@@ -48,8 +57,8 @@ public class UserService {
 
         existingUser.setRole(updatedUser.getRole());
 
-        // 处理密码（假设表单字段名为newPassword）
-        String newPassword = updatedUser.getPassword(); // 需要调整表单字段映射
+        // 处理密码（需确保前端字段名是 newPassword）
+        String newPassword = updatedUser.getPassword();
         if (newPassword != null && !newPassword.isEmpty()) {
             existingUser.setPassword(passwordEncoder.encode(newPassword));
         }
@@ -67,8 +76,14 @@ public class UserService {
         user.setRole(form.getRole());
         userRepository.save(user);
     }
+    // 新增方法：通过邮箱检查用户是否存在
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
 
     public boolean usernameExists(String username) {
         return userRepository.existsByUsername(username);
     }
+
 }

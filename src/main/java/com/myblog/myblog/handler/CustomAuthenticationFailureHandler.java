@@ -25,7 +25,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         String errorMessage = "密码错误或用户不存在";
         Throwable rootCause = exception;
         HttpSession session = request.getSession();
-        session.setAttribute("error", errorMessage);
+        session.setAttribute("errorMessage", errorMessage);
 
         System.out.println("========= 异常链详情 =========");
         Throwable cause = exception;

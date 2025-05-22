@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0;">
+    <h2 style="color: #2d8cf0; text-align: center;">欢迎注册我的博客</h2>
+    <p>感谢您选择加入我们的社区！以下是您的验证码：</p>
+    <div style="background: #f8f8f8; padding: 10px; margin: 20px 0; text-align: center;">
+        <h1 style="color: #2d8cf0; margin: 0;" th:text="${code}"></h1>
+    </div>
+    <p>验证码将在 <strong>10分钟</strong> 后失效，请尽快使用。</p>
+    <p>如果您未进行此操作，请忽略此邮件。</p>
+    <hr/>
+    <p style="color: #999; font-size: 12px;">
+        此为系统邮件，请勿直接回复。<br/>
+        如有疑问，请联系支持团队：<a href="mailto:support@myblog.com">support@myblog.com</a>
+    </p>
+</div>
+</body>
+</html>

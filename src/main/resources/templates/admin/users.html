@@ -170,6 +170,7 @@
         <thead>
         <tr>
             <th>用户名</th>
+            <th>邮箱</th>
             <th>身份</th>
             <th>创建时间</th>
             <th>操作</th>
@@ -178,6 +179,7 @@
         <tbody>
         <tr th:each="user : ${users}">
             <td th:text="${user.username}"></td>
+            <td th:text="${user.email}"></td>
             <td th:text="${user.role}"></td>
             <td th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
             <td>

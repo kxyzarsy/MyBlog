@@ -4,12 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>编辑用户</title>
-    <link th:href="@{/css/admin.css}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --primary-color: #0d6efd;
-            --border-color: #dee2e6;
+            --primary-color: #4361ee;
+            --success-color: #06d6a0;
+            --error-color: #ef476f;
+            --border-color: #e9ecef;
+            --text-primary: #2b2d42;
+            --text-secondary: #8d99ae;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
         }
 
         .admin-container {
@@ -20,73 +30,111 @@
 
         .card-style {
             background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
             padding: 2.5rem;
+            transition: var(--transition);
         }
 
         .form-title {
             font-size: 1.75rem;
-            color: #212529;
+            font-weight: 600;
+            color: var(--text-primary);
             margin-bottom: 2rem;
-            border-bottom: 2px solid var(--border-color);
             padding-bottom: 1rem;
+            position: relative;
+        }
+
+        .form-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 2px;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.75rem;
+            position: relative;
         }
 
         label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             font-weight: 500;
-            color: #495057;
+            color: var(--text-primary);
+            font-size: 0.925rem;
         }
 
         input[type="text"],
         input[type="password"],
+        input[type="email"],
         select {
             width: 100%;
-            padding: 0.875rem 1rem;
+            padding: 0.875rem 1.25rem;
             border: 2px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1rem;
-            transition: all 0.2s;
+            transition: var(--transition);
+            background: #fff;
+            color: var(--text-primary);
+        }
+
+        input:hover,
+        select:hover {
+            border-color: #adb5bd;
         }
 
         input:focus,
         select:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(13,110,253,0.2);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
             outline: none;
         }
 
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
         .password-hint {
-            color: #6c757d;
+            color: var(--text-secondary);
             font-size: 0.875rem;
-            margin-top: 0.5rem;
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-submit {
             background: var(--primary-color);
             color: white;
             padding: 1rem 2rem;
-            border-radius: 8px;
+            border-radius: 10px;
             border: none;
             font-size: 1rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: var(--transition);
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
             margin-top: 1.5rem;
+            width: 100%;
+            justify-content: center;
+            font-weight: 500;
         }
 
         .btn-submit:hover {
-            background: #0b5ed7;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(13,110,253,0.3);
+            background: #3651b5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
         }
 
         @media (max-width: 768px) {
@@ -95,48 +143,109 @@
             }
 
             .card-style {
-                padding: 1.5rem;
+                padding: 1.75rem;
+                border-radius: 12px;
             }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* 新增动态标签效果 */
+        .form-group.focused label {
+            color: var(--primary-color);
+        }
+
+        /* 验证错误提示样式 */
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* 加载动画 */
+        .btn-submit.loading::after {
+            content: "";
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 <div class="admin-container">
     <div class="card-style">
-        <h1 class="form-title">编辑用户</h1>
+        <h1 class="form-title">编辑用户信息</h1>
 
         <form th:action="@{/admin/users/update}" method="post">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <input type="hidden" name="userId" th:value="${user.userId}">
 
+            <!-- 用户名 -->
             <div class="form-group">
                 <label>用户名</label>
                 <input type="text" name="username" th:value="${user.username}" required>
+                <i class="fas fa-user input-icon"></i>
             </div>
 
+            <!-- 邮箱 -->
             <div class="form-group">
-                <label>用户角色</label>
+                <label>电子邮箱</label>
+                <input type="email" name="email" th:value="${user.email}" required>
+                <i class="fas fa-envelope input-icon"></i>
+            </div>
+
+            <!-- 用户角色 -->
+            <div class="form-group">
+                <label>账户角色</label>
                 <select name="role">
                     <option value="USER" th:selected="${user.role == 'USER'}">普通用户</option>
                     <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">管理员</option>
                 </select>
+                <i class="fas fa-user-shield input-icon"></i>
             </div>
 
+            <!-- 密码重置 -->
             <div class="form-group">
                 <label>重置密码</label>
                 <input type="password" name="newPassword" placeholder="输入新密码">
+                <i class="fas fa-lock input-icon"></i>
                 <p class="password-hint">
                     <i class="fas fa-info-circle"></i>
                     留空将保持原密码不变
                 </p>
             </div>
 
-            <button type="submit" class="btn-submit">
+            <!-- 提交按钮 -->
+            <button type="submit" class="btn-submit" onclick="this.classList.add('loading')">
                 <i class="fas fa-save"></i>
                 保存修改
             </button>
         </form>
     </div>
 </div>
+
+<script>
+    // 动态标签效果
+    document.querySelectorAll('input, select').forEach(el => {
+        el.addEventListener('focus', () => {
+            el.closest('.form-group').classList.add('focused')
+        })
+        el.addEventListener('blur', () => {
+            if (!el.value) el.closest('.form-group').classList.remove('focused')
+        })
+    })
+</script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.myblog.myblog.config;
 
+import com.myblog.myblog.handler.RoleBasedAuthenticationSuccessHandler;
 import com.myblog.myblog.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +36,7 @@ public class    SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/", "/login", "/error","/register","/search",
+                                "/", "/login", "/error","/register","/search","/send-code","/auth/send-code",
                                 "/css/**", "/js/**", "/images/**",
                                 "/fonts/**","/articles/**",
                                 "/admin/**",
@@ -50,8 +51,7 @@ public class    SecurityConfig {
                 .userDetailsService(customUserDetailsService)
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .successHandler(authenticationSuccessHandler()) // 绑定成功处理器
-                        .failureHandler(authenticationFailureHandler)
+                        .successHandler(roleBasedAuthenticationSuccessHandler()) // 使用Bean注入
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -93,6 +93,11 @@ public class    SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public RoleBasedAuthenticationSuccessHandler roleBasedAuthenticationSuccessHandler() {
+        return new RoleBasedAuthenticationSuccessHandler();
     }
 
 }
