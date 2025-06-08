@@ -103,6 +103,4 @@ public class BlogPostController {
         }
         return "about";
     }
-
-
 }

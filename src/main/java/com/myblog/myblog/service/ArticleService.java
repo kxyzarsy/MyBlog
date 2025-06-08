@@ -8,17 +8,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ArticleService {
+
+
     private final ArticleRepository articleRepository;
 
     public ArticleService(ArticleRepository articleRepository) {
         this.articleRepository = articleRepository;
     }
+
 
     /**
      * 分页获取所有文章
@@ -36,7 +40,7 @@ public class ArticleService {
 
     // 关键修改：返回 Optional<Article>
     public Optional<Article> findArticleById(Long id) {
-        return articleRepository.findById(id); // 不再直接解包 Optional
+        return articleRepository.findByIdWithAuthor(id);
     }
 
     public void updateArticle(Article article) {
@@ -70,4 +74,5 @@ public class ArticleService {
         return articleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("文章不存在"));
     }
+
 }

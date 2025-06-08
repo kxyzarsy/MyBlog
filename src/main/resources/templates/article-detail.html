@@ -3,16 +3,21 @@
       th:replace="~{layout/base :: layout(~{::title}, ~{::#main-content})}">
 
 <head>
-  <title th:text="'${article.title} - MyBlog'">文章详情 - MyBlog</title>
+  <title th:text="'${article.title} - MyBlog'"> 文章详情 - MyBlog</title>
   <style>
     /* 文章详情样式 */
     .article-detail {
       max-width: 800px;
       margin: 2rem auto;
-      padding: 2rem;
+      padding: 0;
       background: white;
       border-radius: 12px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .article-main {
+      padding: 2rem;
+      border-bottom: 1px solid #f0f0f0;
     }
 
     .article-meta {
@@ -27,43 +32,146 @@
     .article-content {
       font-size: 1.125rem;
       line-height: 1.8;
-      margin-bottom: 3rem;
+      margin-bottom: 4rem;
+      padding: 2rem;
+      background: #f8fafc;
+      border-radius: 12px;
+      border-left: 4px solid #3498db;
     }
 
-    /* 评论区域 */
+    /* 评论区域 - 专业版 */
     .comment-section {
-      margin-top: 3rem;
-      padding-top: 2rem;
-      border-top: 1px solid #e5e7eb;
+      margin-top: 4rem;
+      padding: 3rem;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      position: relative;
+      overflow: hidden;
+      border-top: 2px dashed #e2e8f0;
+      margin-top: 5rem;
+      padding-top: 4rem;
+    }
+    .comment-section::after {
+      content: "评论区域";
+      position: absolute;
+      top: -1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 0 2rem;
+      color: #64748b;
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+    .comment-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(to right, #3498db, #9b59b6);
+    }
+
+    .comment-section-header {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      color: #2c3e50;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+    .comment-section-header::before {
+      content: "\f075";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      color: #3498db;
+      font-size: 2rem;
+      margin-right: 1.2rem;
+      position: absolute;
+      left: -1rem;
+      opacity: 0.1;
     }
 
     .comment-list {
-      margin: 2rem 0;
+      margin: 3rem 0;
     }
 
     .comment-item {
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      background: #f9fafb;
-      border-radius: 8px;
-      transition: all 0.2s;
+      padding: 2.5rem;
+      margin-bottom: 2.5rem;
+      background: white;
+      border-radius: 12px;
+      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      border-top: 1px solid rgba(52, 152, 219, 0.2);
+      position: relative;
+    }
+    .comment-item::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to bottom, #3498db, #9b59b6);
+      border-radius: 4px 0 0 4px;
+    }
+    .comment-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+    }
+
+    .comment-content {
+      color: #2d3436;
+      line-height: 1.8;
+      font-size: 1.1rem;
+      white-space: pre-wrap;
+      padding-left: 1.5rem;
+      border-left: 2px dashed #dfe6e9;
+      margin-left: 1rem;
     }
 
     .comment-header {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
+      gap: 1.2rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid #ecf0f1;
     }
 
     .comment-author {
-      font-weight: 500;
-      color: #1f2937;
+      font-weight: 700;
+      color: #2c3e50;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+    }
+    .comment-author::before {
+      content: "\f007";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      margin-right: 0.6rem;
+      color: #3498db;
+      font-size: 0.9rem;
     }
 
     .comment-time {
-      color: #6b7280;
-      font-size: 0.875rem;
+      color: #7f8c8d;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+    }
+    .comment-time::before {
+      content: "\f017";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      margin-right: 0.4rem;
+      font-size: 0.8rem;
     }
 
     /* 评论表单 */
@@ -71,8 +179,60 @@
       background: #f3f4f6;
       padding: 2rem;
       border-radius: 8px;
+      position: relative;
+    }
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      z-index: 10;
+      display: none;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0,0,0,0.1);
+      border-radius: 50%;
+      border-top-color: #3498db;
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .comment-success {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #2ecc71;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+    .comment-success.show {
+      transform: translateY(0);
+      opacity: 1;
     }
 
+    .error-field {
+      border-color: #ef4444 !important;
+    }
+    .error-message {
+      color: #ef4444;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
     .comment-editor {
       width: 100%;
       min-height: 120px;
@@ -98,6 +258,8 @@
       }
     }
   </style>
+<!-- 添加Font Awesome CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <main id="main-content">
@@ -112,26 +274,44 @@
         </a>
       </div>
     </header>
-
-    <div class="article-content" th:utext="${article.content}"></div>
+    <div class="article-main">
+      <div class="article-content" th:utext="${article.content}"></div>
+    </div>
 
     <!-- 评论区域 -->
     <!-- 修正后的评论表单 -->
     <section class="comment-section">
-      <h3 class="text-xl font-semibold mb-4">评论（<span th:text="${#lists.size(comments)}">0</span>）</h3>
+      <div class="comment-section-header">
+        评论（<span th:text="${#lists.size(comments)}">0</span>）
+      </div>
 
       <!-- 评论列表 -->
       <div class="comment-list">
         <div class="comment-item" th:each="comment : ${comments}">
-          <!-- 评论内容 -->
+          <div class="comment-header">
+            <span class="comment-author" th:text="${comment.user.username}">用户名</span>
+            <span class="comment-time" th:text="${#temporals.format(comment.createTime, 'yyyy-MM-dd HH:mm')}">时间</span>
+            <span class="comment-badge">
+              <i class="fas fa-certificate" style="color: #f1c40f; margin-left: 1rem;"></i>
+              <span style="margin-left: 0.3rem; font-size: 0.8rem;">优质评论</span>
+            </span>
+          </div>
+          <div class="comment-content" th:text="${comment.content}">评论内容</div>
         </div>
       </div>
 
-      <!-- 修正的表单 -->
+      <!-- 优化后的表单 -->
       <div class="comment-form">
-        <form th:action="@{/comments}" method="post">
-          <textarea name="content" class="comment-editor" placeholder="输入评论..."></textarea>
-          <input type="hidden" name="articleId" th:value="${article.id}"/>
+        <form th:action="@{/comments}" method="post" th:object="${commentForm}">
+          <textarea
+            th:field="*{content}"
+            class="comment-editor"
+            placeholder="输入评论..."
+            th:classappend="${#fields.hasErrors('content')} ? 'error-field' : ''">
+          </textarea>
+          <div th:if="${#fields.hasErrors('content')}" class="error-message" th:errors="*{content}"></div>
+          <input type="hidden" th:field="*{articleId}" th:value="${article.id}"/>
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
           <div class="comment-submit">
             <button type="submit" class="btn-primary">提交评论</button>
           </div>
@@ -151,11 +331,18 @@
 </main>
 
 <script>
-  // AJAX评论提交（可选）
+  // 增强版AJAX评论提交
   document.querySelector('.comment-form').addEventListener('submit', function(e) {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.className = 'loading-overlay';
+    loadingOverlay.innerHTML = '<div class="spinner"></div>';
+    form.appendChild(loadingOverlay);
+    loadingOverlay.style.display = 'flex';
+    submitBtn.disabled = true;
 
     fetch(form.action, {
       method: 'POST',
@@ -180,11 +367,29 @@
       `;
                 commentList.prepend(newComment);
                 form.reset();
+
+                // 显示成功提示
+                const successMsg = document.createElement('div');
+                successMsg.className = 'comment-success';
+                successMsg.textContent = '评论发表成功!';
+                document.body.appendChild(successMsg);
+                setTimeout(() => successMsg.classList.add('show'), 10);
+                setTimeout(() => {
+                  successMsg.classList.remove('show');
+                  setTimeout(() => successMsg.remove(), 300);
+                }, 3000);
               } else {
                 alert(data.message || '评论提交失败');
               }
+              loadingOverlay.remove();
+              submitBtn.disabled = false;
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+              console.error('Error:', error);
+              loadingOverlay.remove();
+              submitBtn.disabled = false;
+              alert('网络错误，请稍后重试');
+            });
   });
 </script>
 </html>
