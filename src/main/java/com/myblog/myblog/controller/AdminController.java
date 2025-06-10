@@ -1,8 +1,10 @@
 package com.myblog.myblog.controller;
 
 import com.myblog.myblog.entity.Article;
+import com.myblog.myblog.entity.Comment;
 import com.myblog.myblog.repository.ArticleRepository;
 import com.myblog.myblog.service.ArticleService;
+import com.myblog.myblog.service.CommentService;
 import com.myblog.myblog.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -35,16 +38,19 @@ public class AdminController {
     private final ArticleRepository articleRepository;
     private final UserService userService;
     private final ArticleService articleService;
+    private final CommentService commentService;
 
     @Autowired
     public AdminController(
             ArticleRepository articleRepository,
             UserService userService,
-            ArticleService articleService
+            ArticleService articleService,
+            CommentService commentService
     ) {
         this.articleRepository = articleRepository;
         this.userService = userService;
         this.articleService = articleService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/articles")
@@ -141,16 +147,82 @@ public class AdminController {
     // AdminController.java
     @GetMapping("")
     public String adminDashboard(Model model, HttpServletRequest request) {
-        // 获取统计数据
         long totalArticles = articleService.countAllArticles();
         long totalUsers = userService.countAllUsers();
+        long totalComments = commentService.countAllComments();
+        long pendingComments = commentService.countByStatus(Comment.CommentStatus.PENDING);
+        long approvedComments = commentService.countByStatus(Comment.CommentStatus.APPROVED);
+        long spamComments = commentService.countByStatus(Comment.CommentStatus.SPAM);
 
-        // 添加到模型
         model.addAttribute("totalArticles", totalArticles);
         model.addAttribute("totalUsers", totalUsers);
+        model.addAttribute("totalComments", totalComments);
+        model.addAttribute("pendingComments", pendingComments);
+        model.addAttribute("approvedComments", approvedComments);
+        model.addAttribute("spamComments", spamComments);
         model.addAttribute("currentPath", request.getRequestURI());
 
         return "admin/admin";
     }
+
+
+    // 在类中添加以下方法
+    @GetMapping("/comments")
+    public String manageComments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String keyword,
+            Model model) {
+
+        Comment.CommentStatus commentStatus = null;
+        if (status != null && !status.isEmpty() && !status.equals("all")) {
+            try {
+                commentStatus = Comment.CommentStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // 处理无效状态
+            }
+        }
+        // 获取分页评论数据
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Comment> commentPage = commentService.findByStatusAndKeywordWithArticle(commentStatus, keyword, pageable);
+        // 获取统计数据
+        long totalComments = commentService.countAllComments();
+        long pendingComments = commentService.countByStatus(Comment.CommentStatus.PENDING);
+        long approvedComments = commentService.countByStatus(Comment.CommentStatus.APPROVED);
+        long spamComments = commentService.countByStatus(Comment.CommentStatus.SPAM);
+        // 添加模型属性
+        model.addAttribute("comments", commentPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", commentPage.getTotalPages());
+        model.addAttribute("size", size);
+        model.addAttribute("status", status);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("totalComments", totalComments);
+        model.addAttribute("pendingComments", pendingComments);
+        model.addAttribute("approvedComments", approvedComments);
+        model.addAttribute("spamComments", spamComments);
+
+        return "admin/comments";
+    }
+    @PostMapping("/comments/{id}/approve")
+    @ResponseBody
+    public ResponseEntity<?> approveComment(@PathVariable Long id) {
+        commentService.updateStatus(id, Comment.CommentStatus.APPROVED);
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/comments/{id}/spam")
+    @ResponseBody
+    public ResponseEntity<?> markAsSpam(@PathVariable Long id) {
+        commentService.updateStatus(id, Comment.CommentStatus.SPAM);
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/comments/{id}/delete")
+    @ResponseBody
+    public ResponseEntity<?> deleteComment(@PathVariable Long id) {
+        commentService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
 
 }

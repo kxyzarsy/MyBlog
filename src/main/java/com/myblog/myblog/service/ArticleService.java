@@ -17,6 +17,7 @@ import java.util.Optional;
 public class ArticleService {
 
 
+
     private final ArticleRepository articleRepository;
 
     public ArticleService(ArticleRepository articleRepository) {
@@ -75,4 +76,7 @@ public class ArticleService {
                 .orElseThrow(() -> new RuntimeException("文章不存在"));
     }
 
+    public Optional<Object> getArticleById(Long articleId) {
+        return Optional.empty();
+    }
 }

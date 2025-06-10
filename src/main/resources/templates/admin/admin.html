@@ -76,20 +76,21 @@
             </div>
         </div>
 
-        <div class="stats-card card-activity">
+        <!-- 在数据概览卡片组中添加评论统计 -->
+        <div class="stats-card card-comment">
             <div class="card-header">
-                <i class="fas fa-chart-line"></i>
-                <h3>互动数据</h3>
+                <i class="fas fa-comments"></i>
+                <h3>评论统计</h3>
             </div>
             <div class="card-body">
                 <div class="metric-group">
                     <div class="metric-item">
-                        <span class="metric-value">89%</span>
-                        <span class="metric-label">互动率</span>
+                        <span class="metric-value" th:text="${totalComments}">0</span>
+                        <span class="metric-label">总评论数</span>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-value">1.2k</span>
-                        <span class="metric-label">今日访问</span>
+                        <span class="metric-value" th:text="${pendingComments}">0</span>
+                        <span class="metric-label">待审核</span>
                     </div>
                 </div>
             </div>
@@ -117,6 +118,16 @@
                 <div class="nav-info">
                     <h4>用户管理</h4>
                     <p>管理系统用户权限</p>
+                </div>
+            </a>
+
+            <a href="/admin/comments" class="nav-card">
+                <div class="nav-icon bg-comment">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div class="nav-info">
+                    <h4>评论管理</h4>
+                    <p>审核和管理用户评论</p>
                 </div>
             </a>
         </div>
@@ -153,10 +164,19 @@
                     </div>
                     <i class="fas fa-chevron-right arrow-bounce"></i>
                 </a>
+
+                <!-- 新增评论审核快捷入口 -->
+                <a href="/admin/comments" class="nav-card">
+                    <div class="nav-icon bg-comment">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="nav-info">
+                        <h4>评论管理</h4>
+                        <p>审核和管理用户评论</p>
+                    </div>
+                </a>
             </div>
         </div>
-
-
 
     </div>
 </div>

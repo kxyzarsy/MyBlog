@@ -1,0 +1,357 @@
+<!-- admin/comments.html -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>评论管理</title>
+    <link th:href="@{/css/admin.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 与用户管理页面完全一致的样式 */
+        .card-style {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin: 20px;
+        }
+
+        .management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin: 1.5rem 0;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            padding: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+
+        .data-table tr:hover td {
+            background-color: #f8f9fa;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-action {
+            background: #0d6efd;
+            color: white !important;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+        }
+
+        .btn-icon {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-approve {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .btn-approve:hover {
+            background: #c3e6cb;
+        }
+
+        .btn-spam {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-spam:hover {
+            background: #f5c6cb;
+        }
+
+        .btn-delete {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-delete:hover {
+            background: #f5c6cb;
+        }
+
+        .pagination-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .page-item {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            background: #f8f9fa;
+            color: #495057;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .page-item:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .page-item.active {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        #pageSize {
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            background: white;
+        }
+
+        /* 评论特有样式 */
+        .comment-content {
+            max-width: 400px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .status-tag {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-spam { background: #f8d7da; color: #721c24; }
+
+        .filter-form {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .modern-select {
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+
+        @media (max-width: 768px) {
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .action-buttons {
+                flex-wrap: wrap;
+            }
+
+            .btn-icon {
+                padding: 0.5rem;
+            }
+
+            .filter-form {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="card-style">
+    <div class="management-header">
+        <h1 style="margin:0;font-size:1.75rem;color:#212529">评论管理</h1>
+
+        <!-- 过滤表单 -->
+        <form method="get" action="/admin/comments" class="filter-form">
+            <select name="status" class="modern-select">
+                <option value="all" th:selected="${status == null || status == 'all'}">所有状态</option>
+                <option value="pending" th:selected="${status == 'pending'}">待审核</option>
+                <option value="approved" th:selected="${status == 'approved'}">已批准</option>
+                <option value="spam" th:selected="${status == 'spam'}">垃圾评论</option>
+            </select>
+            <input type="text" name="keyword" th:value="${keyword}" placeholder="搜索评论内容..." class="modern-select">
+            <button type="submit" class="btn-action">筛选</button>
+        </form>
+    </div>
+
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>作者</th>
+            <th>内容</th>
+            <th>状态</th>
+            <th>文章</th>
+            <th>发布时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="comment : ${comments}">
+            <td th:text="${comment.id}"></td>
+            <td th:text="${comment.authorName} ?: '匿名用户'"></td>
+            <td class="comment-content" th:text="${comment.content}"></td>
+            <td>
+                <span class="status-tag"
+                      th:classappend="${comment.status != null} ? ('status-' + ${comment.status.name().toLowerCase()}) : ''"
+                      th:text="${comment.status != null} ? ${comment.status.displayName} : '未知状态'"></span>
+            </td>
+            <td>
+                <a th:href="@{/article/{id}(id=${comment?.article?.id})}"
+                   th:text="${comment?.article?.title}"
+                   target="_blank"></a>
+            </td>
+            <td th:text="${#temporals.format(comment.createTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td>
+                <div class="action-buttons">
+                    <button th:if="${comment.status != null and comment.status.name() != 'APPROVED'}"
+                            class="btn-icon btn-approve"
+                            th:data-id="${comment.id}"
+                            onclick="approveComment(this)">
+                        <i class="fas fa-check"></i> 批准
+                    </button>
+                    <button class="btn-icon btn-spam"
+                            th:data-id="${comment.id}"
+                            onclick="markAsSpam(this)">
+                        <i class="fas fa-ban"></i> 垃圾
+                    </button>
+                    <button class="btn-icon btn-delete"
+                            th:data-id="${comment.id}"
+                            onclick="deleteComment(this)">
+                        <i class="fas fa-trash"></i> 删除
+                    </button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination-wrapper">
+        <nav class="pagination">
+            <a th:if="${currentPage > 0}"
+               th:href="@{/admin/comments(page=${currentPage - 1}, size=${size}, status=${status}, keyword=${keyword})}"
+               class="page-item">
+                <i class="fas fa-chevron-left"></i> 上一页
+            </a>
+
+            <a th:each="page : ${#numbers.sequence(0, totalPages - 1)}"
+               th:href="@{/admin/comments(page=${page}, size=${size}, status=${status}, keyword=${keyword})}"
+               th:classappend="${page == currentPage} ? 'active' : ''"
+               class="page-item"
+               th:text="${page + 1}"></a>
+
+            <a th:if="${currentPage < totalPages - 1}"
+               th:href="@{/admin/comments(page=${currentPage + 1}, size=${size}, status=${status}, keyword=${keyword})}"
+               class="page-item">
+                下一页 <i class="fas fa-chevron-right"></i>
+            </a>
+        </nav>
+
+        <div class="page-size-selector">
+            <span>每页显示：</span>
+            <select id="pageSize" onchange="changePageSize(this.value)">
+                <option value="5" th:selected="${size == 5}">5</option>
+                <option value="10" th:selected="${size == 10}">10</option>
+                <option value="15" th:selected="${size == 15}">15</option>
+                <option value="20" th:selected="${size == 20}">20</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<script>
+    function changePageSize(size) {
+        const params = new URLSearchParams(window.location.search);
+        params.set('size', size);
+        params.set('page', 0);
+        window.location.search = params.toString();
+    }
+
+    function approveComment(button) {
+        const commentId = button.getAttribute('data-id');
+        updateCommentStatus(commentId, 'approve');
+    }
+
+    function markAsSpam(button) {
+        const commentId = button.getAttribute('data-id');
+        updateCommentStatus(commentId, 'spam');
+    }
+
+    function deleteComment(button) {
+        const commentId = button.getAttribute('data-id');
+        if (confirm('确定要删除这条评论吗？')) {
+            updateCommentStatus(commentId, 'delete');
+        }
+    }
+
+    function updateCommentStatus(commentId, action) {
+        const endpoint = `/admin/comments/${commentId}/${action}`;
+
+        fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('操作失败，请重试');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('请求失败');
+            });
+    }
+</script>
+</body>
+</html>
