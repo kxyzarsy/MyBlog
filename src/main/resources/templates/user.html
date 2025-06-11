@@ -1,17 +1,12 @@
 <!DOCTYPE html>
-<ht xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"> <!-- 添加此行 -->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::#main-content})}">
 <head>
-    <meta charset="UTF-8">
-    <title>首页 - MyBlog</title>
-    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <title>用户中心 - MyBlog</title>
 </head>
-<body>
-<div class="header">
-    <a th:href="@{/logout}">退出登录</a>
-</div>
-<h1>欢迎来到 MyBlog</h1>
-<!-- 使用 sec:authentication 代替 #authentication -->
-<p>当前用户：<span sec:authentication="name"></span></p>
-</body>
-</ht>
+<main id="main-content">
+    <h1>欢迎来到 MyBlog</h1>
+    <p>当前用户：<span sec:authentication="name"></span></p>
+</main>
+</html>

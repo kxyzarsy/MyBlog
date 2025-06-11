@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>用户注册 - MyBlog</title>
     <style>
-        /* 保持与登录页面完全一致的样式 */
         body {
             margin: 0;
             padding: 0;
@@ -115,12 +114,6 @@
 
         .code-group button {
             width: auto;
-            padding: 8px 16px;
-            background: #10ac84;
-            margin: 0;
-        }
-        .code-group button {
-            width: auto;
             min-width: 120px;
             padding: 10px 20px;
             background: linear-gradient(135deg, #2d8cf0 0%, #1a73e8 100%);
@@ -147,24 +140,6 @@
             box-shadow: 0 2px 4px rgba(45, 140, 240, 0.2);
         }
 
-        .code-group button i {
-            font-size: 14px;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* 禁用状态样式 */
-        .code-group button:disabled {
-            background: #ddd;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -186,7 +161,6 @@
     <div class="email-notice">（仅支持网易163/126邮箱注册）</div>
 
     <form th:action="@{/auth/register}" method="post">
-        <!-- 邮箱+验证码组 -->
         <div class="login-field">
             <input type="email" name="email" required>
             <label>邮箱地址</label>
@@ -199,7 +173,6 @@
             </button>
         </div>
 
-        <!-- 密码组 -->
         <div class="login-field">
             <input type="password" name="password" required>
             <label>设置密码</label>
@@ -225,13 +198,25 @@
             alert("仅支持网易邮箱注册");
             return;
         }
+
+        const btn = document.querySelector(".code-group button");
+        btn.disabled = true;
+        let seconds = 60;
+        const timer = setInterval(() => {
+            btn.innerHTML = `<i class="fas fa-hourglass"></i> ${seconds}s`;
+            if (seconds-- <= 0) {
+                clearInterval(timer);
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fas fa-paper-plane"></i> 重新获取`;
+            }
+        }, 1000);
+
         fetch("/auth/send-code?email=" + encodeURIComponent(email))
             .then(response => response.text())
             .then(text => alert(text))
             .catch(() => alert("请求失败"));
     }
 
-    // 密码一致性验证
     document.querySelector("form").addEventListener("submit", function(e) {
         const pwd = document.querySelector("input[name='password']").value;
         const confirmPwd = document.querySelector("input[name='confirmPassword']").value;
@@ -240,22 +225,6 @@
             e.preventDefault();
             alert("两次输入的密码不一致！");
         }
-
-        // 添加按钮冷却效果
-        function sendCode() {
-            const btn = document.querySelector(".code-group button");
-            btn.disabled = true;
-            let seconds = 60;
-            const timer = setInterval(() => {
-                btn.innerHTML = `<i class="fas fa-hourglass"></i> ${seconds}s`;
-                if (seconds-- <= 0) {
-                    clearInterval(timer);
-                    btn.disabled = false;
-                    btn.innerHTML = `<i class="fas fa-paper-plane"></i> 重新获取`;
-                }
-            }, 1000);
-        }
-
     });
 </script>
 </body>

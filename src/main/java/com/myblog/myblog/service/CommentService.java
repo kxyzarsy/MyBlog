@@ -18,13 +18,35 @@ import java.util.List;
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final ArticleService articleService; // 添加依赖
+    private final ArticleService articleService;
 
     @Autowired
     public CommentService(CommentRepository commentRepository,
-                          ArticleService articleService) { // 注入ArticleService
+                          ArticleService articleService) {
         this.commentRepository = commentRepository;
         this.articleService = articleService;
+    }
+
+    @Transactional
+    public void createComment(CommentCreateRequest request, User user) {
+        Article article = articleService.getById(request.getArticleId());
+
+        Comment comment = new Comment();
+        comment.setAuthor(user.getUsername());
+        comment.setEmail(user.getEmail());
+        comment.setContent(request.getContent());
+        comment.setArticle(article);
+        comment.setUser(user);
+
+        // 添加敏感词检测
+        if (comment.containsSensitiveWords()) {
+            comment.setStatus(CommentStatus.SPAM);
+        } else {
+            // 默认设置为待审核状态
+            comment.setStatus(CommentStatus.PENDING);
+        }
+
+        commentRepository.save(comment);
     }
 
     public Page<Comment> findAll(Pageable pageable) {
@@ -47,7 +69,18 @@ public class CommentService {
     public void updateStatus(Long id, CommentStatus status) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid comment Id:" + id));
-        comment.setStatus(status);
+        // 状态转换验证
+        if (status == CommentStatus.APPROVED && comment.getStatus() == CommentStatus.SPAM) {
+            // 需要额外检查才能从垃圾状态恢复
+            if (!comment.containsSensitiveWords()) {
+                comment.setStatus(status);
+            } else {
+                throw new IllegalStateException("包含敏感词的评论不能批准");
+            }
+        } else {
+            comment.setStatus(status);
+        }
+
         commentRepository.save(comment);
     }
 
@@ -60,22 +93,8 @@ public class CommentService {
         }
     }
 
-    public void createComment(CommentCreateRequest request, User user) {
-        Article article = (Article) articleService.getArticleById(request.getArticleId())
-                .orElseThrow(() -> new IllegalArgumentException("文章不存在"));
-
-        Comment comment = new Comment();
-        comment.setAuthor(user.getUsername());
-        comment.setEmail(user.getEmail());
-        comment.setContent(request.getContent());
-        comment.setArticle(article);
-        comment.setStatus(Comment.CommentStatus.PENDING);
-
-        commentRepository.save(comment);
-    }
-
     public List<Comment> getCommentsByArticleId(Long id) {
-        return commentRepository.findByArticleId(id); // 修复：调用repository方法
+        return commentRepository.findByArticleId(id);
     }
 
     public Page<Comment> findByStatusAndKeywordWithArticle(
@@ -84,4 +103,6 @@ public class CommentService {
             Pageable pageable) {
         return commentRepository.findByStatusAndKeywordWithArticle(status, keyword, pageable);
     }
+
+
 }

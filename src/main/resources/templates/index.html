@@ -19,8 +19,6 @@
     <div class="article-item" th:each="article : ${articles.content}">
       <div class="article-meta">
         <span th:text="${#temporals.format(article.createTime, 'yyyy-MM-dd')}"></span>
-<!--            分类按钮-->
-<!--        <span class="article-category" th:text="${article.category}"></span>-->
       </div>
       <h2 class="article-title" th:text="${article.title}"></h2>
       <div class="article-content" th:text="${article.content}"></div>
@@ -34,20 +32,20 @@
     </div>
   </div>
 
-  <div class="pagination-container" th:if="${articles.totalPages} > 0">
-    <div class="pagination">
-      <a th:if="${articles.hasPrevious()}"
-         th:href="@{/(keyword=${#strings.isEmpty(searchKeyword) ? null : searchKeyword}, page=${articles.number - 1}, size=${articles.size})}"
-         class="page-link prev"><i class="fas fa-chevron-left"></i></a>
-      <a th:each="pageNum : ${#numbers.sequence(0, articles.totalPages - 1)}"
-         th:href="@{/(keyword=${#strings.isEmpty(searchKeyword) ? null : searchKeyword}, page=${pageNum}, size=${articles.size})}"
-         th:classappend="${pageNum == articles.number} ? 'active'"
-         class="page-link"
-         th:text="${pageNum + 1}"></a>
-      <a th:if="${articles.hasNext()}"
-         th:href="@{/(keyword=${#strings.isEmpty(searchKeyword) ? null : searchKeyword}, page=${articles.number + 1}, size=${articles.size})}"
-         class="page-link next"><i class="fas fa-chevron-right"></i></a>
-    </div>
-</div>
+<!--  <div class="pagination-container" th:if="${articles.totalPages} > 0">-->
+<!--    <div class="pagination">-->
+<!--      <a th:if="${articles.hasPrevious()}"-->
+<!--         th:href="@{/(keyword=${#strings.isEmpty(searchKeyword) ? null : searchKeyword}, page=${articles.number - 1}, size=${articles.size})}"-->
+<!--         class="page-link prev"><i class="fas fa-chevron-left"></i></a>-->
+<!--      <a th:each="pageNum : ${#numbers.sequence(0, articles.totalPages - 1)}"-->
+<!--         th:href="@{/(keyword=${#strings.isEmpty(searchKeyword) ? null : searchKeyword}, page=${pageNum}, size=${articles.size})}"-->
+<!--         th:classappend="${pageNum == articles.number} ? 'active'"-->
+<!--         class="page-link"-->
+<!--         th:text="${pageNum + 1}"></a>-->
+<!--      <a th:if="${articles.hasNext()}"-->
+<!--         th:href="@{/(keyword=${#strings.isEmpty(searchKeyword) ? null : searchKeyword}, page=${articles.number + 1}, size=${articles.size})}"-->
+<!--         class="page-link next"><i class="fas fa-chevron-right"></i></a>-->
+<!--    </div>-->
+<!--  </div>-->
 </main>
 </html>

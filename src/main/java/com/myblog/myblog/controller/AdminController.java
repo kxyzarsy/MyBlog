@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -56,7 +57,7 @@ public class AdminController {
     @GetMapping("/articles")
     public String manageArticles(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "8") int size,
+            @RequestParam(defaultValue = "10") int size,
             Model model,
             HttpServletRequest request
     ) {
@@ -180,7 +181,7 @@ public class AdminController {
             try {
                 commentStatus = Comment.CommentStatus.valueOf(status.toUpperCase());
             } catch (IllegalArgumentException e) {
-                // 处理无效状态
+                // 记录日志
             }
         }
         // 获取分页评论数据
@@ -223,6 +224,29 @@ public class AdminController {
         commentService.deleteById(id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/comments/{id}/{action}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateCommentStatus(
+            @PathVariable Long id,
+            @PathVariable String action
+    ) {
+        switch (action) {
+            case "approve":
+                commentService.updateStatus(id, Comment.CommentStatus.APPROVED);
+                break;
+            case "spam":
+                commentService.updateStatus(id, Comment.CommentStatus.SPAM);
+                break;
+            case "delete":
+                commentService.deleteById(id);
+                break;
+            default:
+                return ResponseEntity.badRequest().body("无效操作");
+        }
+        return ResponseEntity.ok().build();
+    }
+
 
 
 }

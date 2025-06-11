@@ -5,38 +5,22 @@
     <title>关于我们 - MyBlog</title>
     <style>
         :root {
-            --primary-color: #2563eb;       /* 主色调 */
-            --success-color: #10b981;       /* 成功色 */
-            --warning-color: #f59e0b;      /* 警告色 */
-            --danger-color: #ef4444;        /* 危险色 */
-            --bg-color: #f8fafc;            /* 背景色 */
-            --card-bg: #ffffff;             /* 卡片背景 */
-            --text-main: #1e293b;           /* 主文字色 */
-            --text-muted: #64748b;          /* 次要文字 */
+            --primary-color: #2563eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
         }
 
-        /* 基础重置 */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            line-height: 1.6;
-            color: var(--text-main);
-            background: var(--bg-color);
-        }
-
-        /* 主内容区域 */
         #main-content {
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem 1.5rem;
         }
 
-        /* 顶部横幅 */
         .hero-banner {
             text-align: center;
             padding: 4rem 2rem;
@@ -58,7 +42,6 @@
             opacity: 0.95;
         }
 
-        /* 文章表单 */
         .article-form {
             background: var(--card-bg);
             padding: 2.5rem;
@@ -81,7 +64,6 @@
             gap: 0.75rem;
         }
 
-        /* 表单元素 */
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -103,7 +85,6 @@
             background: white;
         }
 
-        /* 按钮样式 */
         .btn-action {
             background: var(--primary-color);
             color: white;
@@ -125,7 +106,6 @@
             box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
         }
 
-        /* 文章列表 */
         .user-articles {
             margin-top: 3rem;
         }
@@ -167,7 +147,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /* 状态标签 */
         .status-tag {
             padding: 0.375rem 0.75rem;
             border-radius: 999px;
@@ -188,7 +167,6 @@
             color: var(--danger-color);
         }
 
-        /* 操作按钮组 */
         .action-buttons {
             display: flex;
             gap: 1rem;
@@ -225,7 +203,6 @@
             background: rgba(239, 68, 68, 0.2);
         }
 
-        /* 敏感词提示 */
         .sensitive-warning {
             color: var(--danger-color);
             font-size: 0.9rem;
@@ -262,14 +239,6 @@
             transform: translateY(-1px);
         }
 
-        .toggle-form-btn .fa-plus {
-            transition: transform 0.3s ease;
-        }
-
-        .toggle-form-btn.active .fa-plus {
-            transform: rotate(45deg);
-        }
-
         .article-form {
             max-height: 0;
             overflow: hidden;
@@ -285,7 +254,6 @@
             margin: 2rem 0;
         }
 
-        /* 响应式设计 */
         @media (max-width: 768px) {
             #main-content {
                 padding: 1.5rem;
@@ -312,96 +280,93 @@
         <p>连接开发者，分享知识，共同成长</p>
     </div>
 
-    <!-- 新增切换按钮 -->
     <div sec:authorize="isAuthenticated()" class="toggle-form-container">
         <button class="toggle-form-btn" id="toggleFormBtn">
             <i class="fas fa-plus"></i> 发布新文章
         </button>
     </div>
 
-    <!-- 新增文章表单 -->
     <div sec:authorize="isAuthenticated()" class="article-form">
         <div class="form-container">
             <h2><i class="fas fa-edit"></i> 撰写新文章</h2>
             <form id="articleForm" th:action="@{/articles}" method="post">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-            <div class="form-group">
-                <input type="text" name="title" placeholder="文章标题" required
-                       class="form-control" oninput="checkSensitive(this.value)">
-                <div class="sensitive-warning" id="titleWarning">
-                    <i class="fas fa-exclamation-triangle"></i> 包含不合适内容
+                <div class="form-group">
+                    <input type="text" name="title" placeholder="文章标题" required
+                           class="form-control" oninput="checkSensitive(this.value)">
+                    <div class="sensitive-warning" id="titleWarning">
+                        <i class="fas fa-exclamation-triangle"></i> 包含不合适内容
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
+                <div class="form-group">
                 <textarea name="content" placeholder="文章内容（支持Markdown）"
                           class="form-control" rows="8" required
                           oninput="checkSensitive(this.value)"></textarea>
-                <div class="sensitive-warning" id="contentWarning">
-                    <i class="fas fa-exclamation-triangle"></i> 包含不合适内容
+                    <div class="sensitive-warning" id="contentWarning">
+                        <i class="fas fa-exclamation-triangle"></i> 包含不合适内容
+                    </div>
                 </div>
-            </div>
 
-            <button type="submit" class="btn-action" id="submitBtn" style="width: 200px">
-                <i class="fas fa-paper-plane"></i> 提交审核
-            </button>
-        </form>
-    </div>
-
-    <!-- 用户文章列表 -->
-    <div sec:authorize="isAuthenticated()" class="user-card article-item">
-        <div class="article-meta">
-            <i class="fas fa-user-circle"></i>
-            用户信息
+                <button type="submit" class="btn-action" id="submitBtn" style="width: 200px">
+                    <i class="fas fa-paper-plane"></i> 提交审核
+                </button>
+            </form>
         </div>
-        <h2 class="article-title" sec:authentication="name"></h2>
-        <div class="article-content">
-            <div class="user-info-item">
-                <i class="fas fa-shield-alt"></i>
-                <span sec:authentication="principal.authorities"></span>
+
+        <div sec:authorize="isAuthenticated()" class="user-card article-item">
+            <div class="article-meta">
+                <i class="fas fa-user-circle"></i>
+                用户信息
             </div>
+            <h2 class="article-title" sec:authentication="name"></h2>
+            <div class="article-content">
+                <div class="user-info-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span sec:authentication="principal.authorities"></span>
+                </div>
 
-            <div class="user-articles" th:if="${userArticles != null}">
-                <h3 class="section-title">
-                    <i class="fas fa-file-alt"></i> 我的文章
-                </h3>
+                <div class="user-articles" th:if="${userArticles != null}">
+                    <h3 class="section-title">
+                        <i class="fas fa-file-alt"></i> 我的文章
+                    </h3>
 
-                <div th:each="article : ${userArticles}" class="article-item">
-                    <div class="article-meta">
-                        <time th:text="${#temporals.format(article.createTime, 'yyyy-MM-dd')}"></time>
-                        <span class="status-tag"
-                              th:classappend="${article.status == T(com.myblog.myblog.entity.Article.ArticleStatus).PENDING_REVIEW ? 'status-pending' :
+                    <div th:each="article : ${userArticles}" class="article-item">
+                        <div class="article-meta">
+                            <time th:text="${#temporals.format(article.createTime, 'yyyy-MM-dd')}"></time>
+                            <span class="status-tag"
+                                  th:classappend="${article.status == T(com.myblog.myblog.entity.Article.ArticleStatus).PENDING_REVIEW ? 'status-pending' :
                       (article.status == T(com.myblog.myblog.entity.Article.ArticleStatus).REJECTED ? 'status-rejected' : '')}"
-                              th:text="${article.status.displayName}"></span>
-                    </div>
-                    <h4 class="article-title" th:text="${article.title}"></h4>
+                                  th:text="${article.status.displayName}"></span>
+                        </div>
+                        <h4 class="article-title" th:text="${article.title}"></h4>
 
-                    <div th:if="${article.status == T(com.myblog.myblog.entity.Article.ArticleStatus).REJECTED}"
-                         class="reject-reason">
-                        <i class="fas fa-comment-exclamation"></i>
-                        拒绝原因：<span th:text="${article.rejectReason}"></span>
-                    </div>
+                        <div th:if="${article.status == T(com.myblog.myblog.entity.Article.ArticleStatus).REJECTED}"
+                             class="reject-reason">
+                            <i class="fas fa-comment-exclamation"></i>
+                            拒绝原因：<span th:text="${article.rejectReason}"></span>
+                        </div>
 
-                    <div class="action-buttons">
-                        <a th:href="@{/admin/articles/edit/{id}(id=${article.id})}"
-                           class="btn-edit" th:if="${article.status.name() != 'PUBLISHED'}">
-                            <i class="fas fa-edit"></i> 编辑
-                        </a>
-                        <form th:action="@{/admin/articles/delete/{id}(id=${article.id})}"
-                              method="post" class="inline-form">
-                            <button type="submit" class="btn-delete">
-                                <i class="fas fa-trash"></i> 删除
-                            </button>
-                        </form>
+                        <div class="action-buttons">
+                            <a th:href="@{/admin/articles/edit/{id}(id=${article.id})}"
+                               class="btn-edit" th:if="${article.status.name() != 'PUBLISHED'}">
+                                <i class="fas fa-edit"></i> 编辑
+                            </a>
+                            <form th:action="@{/admin/articles/delete/{id}(id=${article.id})}"
+                                  method="post" class="inline-form">
+                                <button type="submit" class="btn-delete">
+                                    <i class="fas fa-trash"></i> 删除
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
+            </div>
         </div>
-    </div>
+    </div>·
 </main>
 <script>
-
-    // 新增表单切换逻辑
     const toggleBtn = document.getElementById('toggleFormBtn');
     const articleForm = document.querySelector('.article-form');
 
@@ -413,7 +378,6 @@
             : '<i class="fas fa-plus"></i> 发布新文章';
     });
 
-    // 敏感词检测
     const sensitiveWords = ['色情', '赌博', '毒品', '诈骗', '暴力'];
 
     function checkSensitive(text) {
@@ -423,31 +387,9 @@
         document.getElementById('submitBtn').disabled = hasSensitive;
     }
 
-    // 表单提交处理
     document.getElementById('articleForm').addEventListener('submit', function (e) {
         const btn = document.getElementById('submitBtn');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 提交中...';
         btn.disabled = true;
     });
-
-        // 添加平滑滚动效果
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
-
-        // 增强输入体验
-        document.querySelectorAll('.form-control').forEach(input => {
-        input.addEventListener('focus', function () {
-            this.parentElement.classList.add('focused');
-        });
-        input.addEventListener('blur', function() {
-        this.parentElement.classList.remove('focused');
-    });
-    });
-
 </script>

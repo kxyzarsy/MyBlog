@@ -6,6 +6,7 @@
     <title>评论管理</title>
     <link th:href="@{/css/admin.css}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         /* 与用户管理页面完全一致的样式 */
         .card-style {
@@ -128,8 +129,14 @@
             text-decoration: none;
             transition: all 0.2s;
         }
+             /* 添加敏感词提示样式 */
+         .sensitive-warning {
+             color: #dc3545;
+             font-size: 0.8em;
+             margin-left: 5px;
+         }
 
-        .page-item:hover:not(.active) {
+    .page-item:hover:not(.active) {
             background: #e9ecef;
         }
 
@@ -242,6 +249,11 @@
                 <span class="status-tag"
                       th:classappend="${comment.status != null} ? ('status-' + ${comment.status.name().toLowerCase()}) : ''"
                       th:text="${comment.status != null} ? ${comment.status.displayName} : '未知状态'"></span>
+                <span th:if="${comment.containsSensitiveWords()}"
+                      class="status-tag status-spam"
+                      style="margin-left: 5px;">
+                    含敏感词
+                </span>
             </td>
             <td>
                 <a th:href="@{/article/{id}(id=${comment?.article?.id})}"
@@ -251,7 +263,7 @@
             <td th:text="${#temporals.format(comment.createTime, 'yyyy-MM-dd HH:mm')}"></td>
             <td>
                 <div class="action-buttons">
-                    <button th:if="${comment.status != null and comment.status.name() != 'APPROVED'}"
+                    <button th:if="${comment.status.name() == 'PENDING'}"
                             class="btn-icon btn-approve"
                             th:data-id="${comment.id}"
                             onclick="approveComment(this)">
@@ -331,27 +343,53 @@
         }
     }
 
+    // 修改后的updateCommentStatus函数
     function updateCommentStatus(commentId, action) {
-        const endpoint = `/admin/comments/${commentId}/${action}`;
+        // 增强版Cookie解析器
+        const getCsrfToken = () => {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                // 精确匹配XSRF-TOKEN
+                if (cookie.startsWith('XSRF-TOKEN=')) {
+                    return decodeURIComponent(cookie.substring('XSRF-TOKEN='.length));
+                }
+            }
+            return "";
+        };
 
-        fetch(endpoint, {
+        const token = getCsrfToken();
+        console.log("CSRF Token:", token); // 确保这里打印出有效Token
+
+        if (!token) {
+            alert('CSRF Token未找到，请重新登录');
+            return;
+        }
+
+        fetch(`/admin/comments/${commentId}/${action}`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-XSRF-TOKEN': token  // 关键：使用正确的请求头名称
             }
         })
             .then(response => {
                 if (response.ok) {
                     location.reload();
                 } else {
-                    alert('操作失败，请重试');
+                    console.error('Status Code:', response.status);
+                    response.text().then(text => {
+                        console.error("Error response:", text);
+                        alert('操作失败: ' + text);
+                    });
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('请求失败');
+                console.error('Fetch error:', error);
+                alert('请求失败: ' + error.message);
             });
     }
+
 </script>
 </body>
 </html>

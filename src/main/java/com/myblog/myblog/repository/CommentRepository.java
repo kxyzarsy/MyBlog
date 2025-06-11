@@ -28,7 +28,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             Pageable pageable);
     @Query("SELECT c FROM Comment c LEFT JOIN FETCH c.article WHERE " +
             "(:status IS NULL OR c.status = :status) AND " +
-            "(:keyword IS NULL OR c.content LIKE %:keyword%)")
+            "(:keyword IS NULL OR c.content LIKE CONCAT('%', :keyword, '%'))")
     Page<Comment> findByStatusAndKeywordWithArticle(
             @Param("status") Comment.CommentStatus status,
             @Param("keyword") String keyword,

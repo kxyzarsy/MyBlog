@@ -15,7 +15,7 @@
     --text-light: #edf2f4;
     --background-light: #f8f9fa;
     --background-dark: #1b263b;
-    --border-color: #e9ecef;
+    --border-color: #007fff;
 
     /* 设计元素 */
     --shadow-sm: 0 2px 4px rgba(0,0,0,0.08);
@@ -31,33 +31,32 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
-    min-height: calc(100vh - 200px); /* 确保内容撑开高度 */
+    min-height: calc(100vh - 200px);
 }
 
-/* 调整原有内容区样式 */
 .content {
-    margin: 1rem 0; /* 去除左右外边距 */
+    margin: 1rem 0;
     padding: 2rem;
-    width: 100%; /* 占满容器宽度 */
-    box-sizing: border-box; /* 包含padding */
+    width: 100%;
+    box-sizing: border-box;
 }
+
 html {
-    font-size: 16px; /* 修正单位 */
+    font-size: 16px;
     scroll-behavior: smooth;
 }
 
 body {
-
     line-height: 1.6;
     color: var(--text-dark);
-    background-color: var(--background-light); /* 修正换行问题 */
+    background-color: var(--background-light);
     margin: 0;
 }
 
 /* ===== 头部 ===== */
 .header {
     display: flex;
-    justify-content: space-between; /* 保持左右分布 */
+    justify-content: space-between;
     align-items: center;
     margin: 1rem;
     padding: 0.5rem 1rem;
@@ -72,13 +71,16 @@ body {
     gap: 20px;
     flex: 1;
 }
+
 .logo-link {
     margin-right: 20px;
 }
+
 .logo-image {
     height: 45px;
     width: auto;
 }
+
 .search-form {
     flex: 1;
     max-width: 600px;
@@ -86,6 +88,7 @@ body {
     display: flex;
     align-items: center;
 }
+
 .search-input {
     flex: 1;
     padding: 0.6rem 1.2rem;
@@ -94,16 +97,9 @@ body {
     transition: var(--transition-base);
 }
 
-.header-right .header-right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end; /* 右侧对齐 */
-    flex: 1; /* 占据剩余空间 */
-}
-
 .user-info {
     display: flex;
-    justify-content: flex-end; /* 右侧对齐 */
+    justify-content: flex-end;
     align-items: center;
     flex: 1;
     min-width: 300px;
@@ -112,7 +108,7 @@ body {
 .auth-container {
     display: flex;
     align-items: center;
-    justify-content: center; /* 水平居中 */
+    justify-content: center;
     gap: 1.5rem;
 }
 
@@ -123,7 +119,7 @@ body {
 
 .btn-logout {
     display: flex;
-    align-items: center; /* 垂直居中 */
+    align-items: center;
     padding: 0.4rem 0.8rem;
     background: var(--secondary-color);
     color: white !important;
@@ -131,93 +127,43 @@ body {
     border-radius: 4px;
     cursor: pointer;
     transition: var(--transition-base);
-    margin-left: auto; /* 登录按钮靠右 */
+    margin-left: auto;
 }
 
 .btn-logout:hover {
-    background: #5a6268; /* 悬停颜色加深 */
+    background: #5a6268;
 }
 
 .logo {
-    flex: 0 0 auto; /* 取消固定宽度，根据内容自适应 */
+    flex: 0 0 auto;
     padding: 1rem;
-    margin-right: 80px; /* 新增：Logo 向右移动 10px */
+    margin-right: 80px;
 }
+
 .logo-image {
-    height: 45px; /* 控制 Logo 高度 */
-    width: auto; /* 保持原始宽高比 */
+    height: 45px;
+    width: auto;
 }
 
 /* ===== 登录按钮样式 ===== */
 .btn-login {
     display: inline-block;
-    padding: 0.8rem 2rem; /* 增加按钮尺寸 */
-    background: linear-gradient(135deg, var(--primary-color) 0%, #2ddda2 100%); /* 添加渐变背景 */
+    padding: 0.8rem 2rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #2ddda2 100%);
     color: white !important;
     border: none;
-    border-radius: 30px; /* 更圆润的圆角 */
+    border-radius: 30px;
     text-decoration: none;
-    font-weight: 600; /* 加粗字体 */
-    letter-spacing: 1px; /* 字母间距微调 */
-    box-shadow: 0 4px 6px rgba(185, 220, 203, 0.2); /* 添加立体阴影 */
+    font-weight: 600;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 6px rgba(185, 220, 203, 0.2);
     transition: var(--transition-base);
     position: relative;
     overflow: hidden;
     cursor: pointer;
 }
-.user-info {
-    display: flex;
-    justify-content: flex-end; /* 右侧对齐 */
-    align-items: center;
-    flex: 1; /* 占据剩余空间 */
-    min-width: 300px; /* 防止内容挤压 */
-}
-/* 已登录容器 */
-.auth-container {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* 新增：水平居中 */
-    gap: 1.5rem;
-}
 
-/* 添加悬浮微交互 */
-.btn-login:hover {
-    background: linear-gradient(135deg, #0069d9 0%, #004d33 100%);
-    transform: translateY(-2px) scale(1.02); /* 轻微放大 */
-    box-shadow: 0 6px 12px rgba(0, 123, 79, 0.3); /* 悬停时阴影增强 */
-}
-
-/* 点击反馈效果 */
-.btn-login:active {
-    transform: translateY(1px) scale(0.98);
-    box-shadow: 0 2px 4px rgba(0, 123, 79, 0.2);
-}
-
-/* 可选：添加装饰性光效（伪元素实现） */
-.btn-login::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-            45deg,
-            transparent 25%,
-            rgba(255,255,255,0.1) 50%,
-            transparent 75%
-    );
-    animation: shine 3s infinite;
-    opacity: 0.5;
-}
-
-@keyframes shine {
-    100% {
-        transform: translateX(100%);
-    }
-}
-
-/* ===== 用户名美化 ===== */
+/* 用户名美化 */
 .username {
     font-size: 1.1rem;
     font-weight: 600;
@@ -241,7 +187,7 @@ body {
     background: linear-gradient(90deg, #b934d8, transparent);
 }
 
-    .username:hover {
+.username:hover {
     text-shadow: 0 4px 8px rgba(0, 123, 79, 0.25);
 }
 
@@ -249,9 +195,9 @@ body {
     width: 100%;
 }
 
-/* ===== 退出按钮美化 ===== */
-.btn-login {
-    margin-left: auto; /* 强制右侧对齐 */
+/* 退出按钮美化 */
+.btn-logout {
+    margin-left: auto;
     display: inline-flex;
     align-items: center;
     background: linear-gradient(135deg, #ff4b4b, #c53030);
@@ -272,12 +218,7 @@ body {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-            120deg,
-            transparent,
-            rgba(255, 255, 255, 0.2),
-            transparent
-    );
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     transition: left 0.6s;
 }
 
@@ -285,6 +226,7 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(207, 48, 48, 0.3);
 }
+
 .btn-logout:hover::before {
     left: 100%;
 }
@@ -292,12 +234,6 @@ body {
 .btn-logout:active {
     transform: translateY(1px);
     box-shadow: 0 2px 4px rgba(207, 48, 48, 0.2);
-}
-
-/* 添加退出图标（需引入Font Awesome）*/
-.btn-logout i {
-    margin-right: 0.5rem;
-    font-size: 0.9rem;
 }
 
 /* 卡片入场动画 */
@@ -325,7 +261,6 @@ body {
 .article-item:nth-child(5) { animation-delay: 0.5s; }
 
 /* ===== 导航栏 ===== */
-/* 现代化导航栏 */
 .navbar {
     display: flex;
     margin: 1rem;
@@ -420,6 +355,21 @@ body {
     gap: 1.5rem;
 }
 
+/* 确保详情页样式优先级 */
+#main-content .article-detail-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+/* 重置基础内容区域填充 */
+.page-container {
+    padding: 0 !important;
+}
+
 /* 现代化卡片设计 */
 .card {
     position: relative;
@@ -463,6 +413,11 @@ body {
     margin-top: 1.5rem;
     padding-top: 1rem;
     border-top: 1px solid var(--border-color);
+}
+/* 页脚字体颜色设置 */
+
+.footer p {
+    color: #7e67ec; /* 您可以根据需要更改颜色值 */
 }
 
 /* 现代化按钮设计 */
@@ -538,7 +493,6 @@ body {
 }
 
 /* ===== 尾部 ===== */
-/* 现代化页脚 */
 .footer {
     margin-top: 3rem;
     padding: 2rem 1rem;
@@ -617,17 +571,9 @@ body {
 /* 搜索栏样式 */
 .search-form {
     position: relative;
-    margin-left: 20px; /* 符合右边20px要求 */
+    margin-left: 20px;
     display: flex;
     align-items: center;
-}
-
-.search-input {
-    padding: 0.6rem 1.2rem;
-    border: 2px solid var(--primary-color);
-    border-radius: 25px;
-    width: 250px;
-    transition: var(--transition-base);
 }
 
 .search-input:focus {
@@ -697,11 +643,6 @@ body {
     background: rgba(185, 52, 216, 0.05);
 }
 
-.navbar a.active::after {
-    width: 100%;
-    left: 0;
-}
-
 .logo-link {
     display: inline-block;
     transition: transform 0.3s ease;
@@ -710,6 +651,7 @@ body {
 .logo-link:hover {
     transform: scale(1.05);
 }
+
 /* ===== 响应式设计 ===== */
 @media (max-width: 768px) {
     .header {
@@ -818,7 +760,8 @@ body {
     color: var(--primary);
     border-bottom: 1px dotted currentColor;
 }
-/* 在base.css末尾添加 */
+
+/* 全局布局样式 */
 body {
     display: flex;
     flex-direction: column;
@@ -827,7 +770,7 @@ body {
 
 #main-content {
     flex: 1;
-    padding-bottom: 60px; /* 给footer留出空间 */
+    padding-bottom: 60px;
 }
 
 .footer {

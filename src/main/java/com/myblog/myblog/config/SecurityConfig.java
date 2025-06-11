@@ -2,6 +2,8 @@ package com.myblog.myblog.config;
 
 import com.myblog.myblog.handler.RoleBasedAuthenticationSuccessHandler;
 import com.myblog.myblog.service.CustomUserDetailsService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +20,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import com.myblog.myblog.handler.CustomAuthenticationFailureHandler;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
+
+import java.util.function.Supplier;
 
 @Configuration
 @EnableWebSecurity
@@ -33,13 +41,29 @@ public class    SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // 创建并配置CookieCsrfTokenRepository
+        CookieCsrfTokenRepository csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        csrfTokenRepository.setCookiePath("/"); // 关键：设置Cookie作用域
+        csrfTokenRepository.setHeaderName("X-XSRF-TOKEN"); // 明确设置请求头名称
         http
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(csrfTokenRepository)
+                        // 添加CSRF调试日志
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler() {
+                            @Override
+                            public void handle(HttpServletRequest request,
+                                               HttpServletResponse response,
+                                               Supplier<CsrfToken> csrfToken) {
+                                System.out.println("CSRF Token: " + csrfToken.get().getToken());
+                                super.handle(request, response, csrfToken);
+                            }
+                        })
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/", "/login", "/error","/register","/search","/send-code","/auth/send-code",
                                 "/css/**", "/js/**", "/images/**",
                                 "/fonts/**","/articles/**",
-                                "/admin/**",
                                 "/swagger-ui/**", "/v3/api-docs/**",
                                 "/actuator/**"
                         ).permitAll()
@@ -48,7 +72,6 @@ public class    SecurityConfig {
                         .requestMatchers("/user/**").hasAuthority("ROLE_USER")
                         .anyRequest().authenticated()
                 )
-                .userDetailsService(customUserDetailsService)
                 .formLogin(form -> form
                         .loginPage("/login")
                         .successHandler(roleBasedAuthenticationSuccessHandler()) // 使用Bean注入
@@ -60,13 +83,16 @@ public class    SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
-
                 )
                 .headers(headers -> headers  // 修复链式调用
                         .cacheControl(HeadersConfigurer.CacheControlConfig::disable)
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
+
+
                 .userDetailsService(customUserDetailsService);
+
+
 
         return http.build();
     }

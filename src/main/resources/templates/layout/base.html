@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:replace="${title}">MyBlog</title>
     <link th:href="@{/css/base.css}" rel="stylesheet">
-    <link th:href="@{/css/article-list.css}" rel="stylesheet">
+    <link th:href="@{~/css/article-list.css}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
@@ -21,43 +21,28 @@
         </form>
     </div>
     <div class="user-info">
-        <!-- 已登录状态 -->
         <div sec:authorize="isAuthenticated()" class="auth-container">
             <span class="username" sec:authentication="name"></span>
             <form th:action="@{/logout}" method="post">
                 <button class="btn btn-logout">退出登录</button>
             </form>
         </div>
-        <!-- 未登录状态 -->
         <div sec:authorize="!isAuthenticated()">
             <a th:href="@{/login}" class="btn btn-login">登录/注册</a>
         </div>
     </div>
-
 </header>
 
 <nav class="navbar">
-    <!-- 添加空值判断 -->
-    <a th:href="@{/}"
-       th:classappend="${(currentPath != null) and (currentPath == '/' or currentPath == '')} ? 'active'">首页</a>
-
-<!--    <a th:href="@{/archive}"-->
-<!--       th:classappend="${(currentPath != null) and #strings.startsWith(currentPath, '/archive')} ? 'active'">归档</a>-->
-
-    <a th:href="@{/about}"
-       th:classappend="${(currentPath != null) and #strings.startsWith(currentPath, '/about')} ? 'active'">关于</a>
+    <a th:href="@{/}" th:classappend="${(currentPath != null) and (currentPath == '/' or currentPath == '')} ? 'active'">首页</a>
+    <a th:href="@{/about}" th:classappend="${(currentPath != null) and #strings.startsWith(currentPath, '/about')} ? 'active'">关于</a>
 </nav>
 
-<main class="page-container" th:replace="${content}"></main>
+<main th:replace="${content}"></main> <!-- 内容插入点 -->
 
-<footer class="footer" th:fragment="footer">
+<footer class="footer">
     <div class="container">
         <p>© MyBlog 2025 - 自豪地采用 Spring Boot</p>
-<!--        <div class="social-links">-->
-<!--            <a href="#"><i class="fab fa-github"></i></a>-->
-<!--            <a href="#"><i class="fab fa-twitter"></i></a>-->
-<!--            <a href="#"><i class="fab fa-weibo"></i></a>-->
-<!--        </div>-->
     </div>
 </footer>
 </body>
